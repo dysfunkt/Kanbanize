@@ -1,2 +1,2 @@
-# 2006-SCSG-Seow-s-Team
-SC2006 Project
+# Not 2006 Project
+Palworld
