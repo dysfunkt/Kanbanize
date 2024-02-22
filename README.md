@@ -1,2 +1,2 @@
-# Not 2006 Project
-Palworld
+# Kanpan Board
+
