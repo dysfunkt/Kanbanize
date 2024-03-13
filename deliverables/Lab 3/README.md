@@ -6,11 +6,11 @@ Deliverables for Lab 3 are:
 
 • Design Model
 
-• Class diagram
+  - Class diagram
 
-• Sequence diagrams
+  - Sequence diagrams
 
-• Dialog map
+  - Dialog map
 
 • System architecture
 
