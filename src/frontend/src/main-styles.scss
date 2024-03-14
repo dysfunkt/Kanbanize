@@ -1,0 +1,27 @@
+//This is where we put global styles and change variable values
+
+@import url('https://fonts.googleapis.com/css?family=Lato:400,700|Nunito:400,700');
+
+$purple: #e0bbe4;
+$pink: #d291bc;
+$light-purple: #fec8d8;
+$dark-purple: #957dad;
+
+$light: #f8f8f8;
+
+$family-sans-serif: "Nunito", sans-serif;
+$primary: $pink;
+
+$link: $light-purple;
+
+$control-border-width: 2px;
+$input-border-color: transparent;
+$input-shadow: none;
+
+html {
+    background: linear-gradient(to right top, $purple, $pink);
+}
+
+html, body {
+    height: 100%;
+}
