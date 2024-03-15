@@ -9,12 +9,14 @@ import { KanbanViewComponent } from './pages/kanban-view/kanban-view.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { HttpClientModule } from '@angular/common/http';
+import { NewListComponent } from './pages/new-list/new-list.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardViewComponent,
-    KanbanViewComponent
+    KanbanViewComponent,
+    NewListComponent
   ],
   imports: [
     BrowserModule,
