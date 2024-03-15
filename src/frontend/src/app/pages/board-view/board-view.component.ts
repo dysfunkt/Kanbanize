@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { TaskService } from '../../task.service';
 
 @Component({
   selector: 'app-board-view',
@@ -7,4 +8,11 @@ import { Component } from '@angular/core';
 })
 export class BoardViewComponent {
 
+  constructor(private taskService: TaskService) {}
+
+  createNewList() {
+    this.taskService.createList('Testing').subscribe((response: any) => {
+      console.log(response);
+    })
+  }
 }

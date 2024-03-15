@@ -6,7 +6,7 @@ import { KanbanViewComponent } from './pages/kanban-view/kanban-view.component';
 const routes: Routes = [
   { path: 'board-view', component: BoardViewComponent },
   { path: 'kanban-view', component: KanbanViewComponent },
-  { path: '', redirectTo: '/kanban-view', pathMatch: 'full' },
+  { path: '', redirectTo: '/board-view', pathMatch: 'full' },
 ];
 
 @NgModule({
