@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params } from '@angular/router';
+import { Task } from '../../models/task.model';
+import { List } from '../../models/list.model';
 
 @Component({
   selector: 'app-board-view',
@@ -9,24 +11,34 @@ import { ActivatedRoute, Params } from '@angular/router';
 })
 export class BoardViewComponent implements OnInit{
 
-  lists: any;
-  tasks: any;
+  lists!: List[];
+  tasks!: Task[];
 
   constructor(private taskService: TaskService, private route: ActivatedRoute) {}
 
   ngOnInit() {
+    this.taskService.getLists().subscribe(next => {
+      
+      this.lists = next as List[];
+      
+    })
     this.route.params.subscribe(
       (params: Params) => {
         console.log(params);
-        this.taskService.getTasks(params['listId']).subscribe((tasks: Object) => {
-          this.tasks = tasks;
-        })
+        if (params['listId'] == undefined) {
+        } else {
+          this.taskService.getTasks(params['listId']).subscribe(next => {
+            this.tasks = next as Task[];
+          })
+        }
       }
-
-
     )
-    this.taskService.getLists().subscribe((lists: Object) => {
-      this.lists = lists;
+  }
+
+  onTaskClick(task: Task) {
+    this.taskService.complete(task).subscribe(() => {
+      console.log("Completed Successfully");
+      task.completed = !task.completed;
     })
   }
 }

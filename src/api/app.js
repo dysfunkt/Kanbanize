@@ -6,7 +6,7 @@ const { mongoose } = require('./db/mongoose');
 const bodyParser = require('body-parser');
 
 // Load in mongoose models
-const { List, Task } = require('./db/models');
+const { List, Task, Board, TaskCard } = require('./db/models');
 
 // Load middleware
 app.use(bodyParser.json());
@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 // CORS HEADER MIDDLEWARE
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
@@ -54,7 +55,7 @@ app.post('/lists', (req, res) => {
 });
 
 /**
- * PATH /lists/:id
+ * PATCH /lists/:id
  * purpose: update a specified list
  */
 app.patch('/lists/:id', (req, res) => {
@@ -127,7 +128,7 @@ app.patch('/lists/:listId/tasks/:taskId', (req, res) => {
     }, {
         $set: req.body
     }).then(() => {
-        res.sendStatus(200);
+        res.send({message: 'Updated Successfully.'});
     })
 });
 
@@ -141,6 +142,120 @@ app.delete('/lists/:listId/tasks/:taskId', (req, res) => {
         _listId: req.params.listId
     }).then ((removedTaskDoc) => {
         res.send(removedTaskDoc);
+    })
+});
+
+
+/* KANBAN ROUTES */
+
+/**
+ * GET /boards
+ * purpose: get all boards
+ */
+app.get('/boards', (req, res) => {
+    //return an array of all the boards in the database
+    Board.find({}).then((boards) => {
+        res.send(boards);
+    }).catch((e) => {
+        res.send(e);
+    })
+})
+
+/**
+ * POST /boards
+ * Purpose: create a board
+ */
+app.post('/boards', (req, res) => {
+    let title = req.body.title;
+
+    let newBoard = new Board({
+        title
+    });
+    newBoard.save().then((boardDoc) => {
+        // the full board doc is returned (including id)
+        res.send(boardDoc);
+    });
+});
+
+/**
+ * PATCH /boards/:id
+ * purpose: update a specified board
+ */
+app.patch('/boards/:id', (req, res) => {
+    //update the specified board (board document with id in the URL) with the new values specified in the JSON body of the request 
+    Board.findOneAndUpdate({ _id: req.params.id }, {
+        $set: req.body
+    }).then(() => {
+        res.sendStatus(200);
+    });
+});
+
+/**
+ * DELETE /boards/:id
+ * purpose: delete a board
+ */
+app.delete('/boards/:id', (req,res) => {
+    //delete the specified board (document with id in the URL)
+    Board.findOneAndDelete({
+        _id: req.params.id
+    }).then((removedBoardDoc) => {
+        res.send(removedBoardDoc);
+    })
+});
+
+/**
+ * GET /boards/:boardID/taskcards
+ * Purpose: Get all taskcards in a specific board
+ */
+app.get('/boards/:boardId/taskcards', (req, res) => {
+    // We want to return all tasks that belong to a specific list (specified by list ID)
+    TaskCard.find({
+        _boardId: req.params.boardId
+    }).then((taskcards) => {
+        res.send(taskcards);
+    })
+});
+
+/**
+ * PATCH /boards/:boardId/taskcard/:taskcardId
+ */
+app.patch('/boards/:boardId/taskcards/:taskcardId', (req, res) => {
+    // Update an existing taskcard (specified by taskcardId)
+    TaskCard.findOneAndUpdate({
+        _id: req.params.taskcardId,
+        _boardId: req.params.boardId
+    }, {
+        $set: req.body
+    }).then(() => {
+        res.send({message: 'Updated Successfully.'});
+    })
+});
+
+/**
+ * POST /boards/:boardId/taskcard
+ * Purpose: Create a new taskcard in a specific board
+ */
+app.post('/boards/:boardId/taskcards', (req, res) => {
+    //We want to create a new taskcard in a board specified by boardId
+    let newTaskCard = new TaskCard({
+        title: req.body.title,
+        _boardId: req.params.boardId
+    });
+    newTaskCard.save().then((newTaskCardDoc) => {
+        res.send(newTaskCardDoc);
+    })
+})
+
+/**
+ * DELETE /boards/:boardId/taskcard/:taskcardId
+ * Purpose: Delete a taskcard
+ */
+app.delete('/boards/:boardId/taskcards/:taskcardId', (req, res) => {
+    TaskCard.findOneAndDelete({
+        _id: req.params.taskcardId,
+        _boardId: req.params.boardId
+    }).then ((removedTaskCardDoc) => {
+        res.send(removedTaskCardDoc);
     })
 });
 

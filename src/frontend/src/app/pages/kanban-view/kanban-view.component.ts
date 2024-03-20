@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -7,7 +7,9 @@ import {
   CdkDropList,
 } from '@angular/cdk/drag-drop';
 import { Board } from '../../models/board.model';
-import { Column } from '../../models/column.model';
+import { TaskService } from '../../task.service';
+import { ActivatedRoute } from '@angular/router';
+
 
 
 @Component({
@@ -15,33 +17,20 @@ import { Column } from '../../models/column.model';
   templateUrl: './kanban-view.component.html',
   styleUrl: './kanban-view.component.scss'
 })
-export class KanbanViewComponent {
+export class KanbanViewComponent implements OnInit{
 
-  board: Board = new Board('Test Board', [
-    new Column('Backlog', [
-      "Backlog 1",
-      "This is another backlog",
-      "Yet another backlog"
-    ]), 
-    new Column('In Progress', [
-      "balls",
-      "nuts",
-      "deez"
-    ]),
-    new Column('Needs Review', [
-      'Get to work', 
-      'Pick up groceries', 
-      'Go home', 
-      'Fall asleep'
-    ]),
-    new Column('Completed', [
-      'Get up', 
-      'Brush teeth', 
-      'Take a shower', 
-      'Check e-mail', 
-      'Walk dog'
-    ])
-  ])
+  boards!: Board[];
+
+  constructor(private taskService: TaskService, private route: ActivatedRoute) {}
+
+  ngOnInit() { 
+    this.taskService.getBoards().subscribe(next => {
+      this.boards = next as Board[];
+
+    })
+  }
+  
+
 
 
   drop(event: CdkDragDrop<string[]>) {
