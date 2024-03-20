@@ -1,19 +1,16 @@
 <div class="centered-content">
     <div class="project-manager-container">
-        <div class="project-list-container has-background-light"> 
+        <div class="project-list-container has-background-white"> 
             <h1 class="title has-text-primary">
                 Projects
             </h1>
 
             <!-- Project Elements -->
             <div class="project-menu">
-                <div class="project-menu-item">
-                    <p>Project 1</p>
+                <div class="project-menu-item has-background-light" *ngFor="let project of boards">
+                    <p>{{project.title}}</p>
                 </div>
 
-                <a class="project-menu-item">
-                    <p>Project 2</p>
-                </a>
             </div>
 
             <button class="button is-primary has-text-white" >+ New Project</button>
