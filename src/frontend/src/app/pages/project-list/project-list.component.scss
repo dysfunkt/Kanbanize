@@ -1,5 +1,11 @@
 @import "../../../main-styles.scss";
 
+.has-gradient-text {
+  background: -webkit-linear-gradient($pink, $dark-purple);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
 .project-manager-container {
   display: flex;
   width: 100%;
@@ -48,11 +54,14 @@
     border-radius: 5px;
 
     width: 100%;
+    background-color: $light;
     color: #5f5f5f;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
 
-    background: $light-purple;
-
+    &:hover {
+      background: $primary;
+    }
+  
   }
 }
 

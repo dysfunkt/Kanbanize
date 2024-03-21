@@ -1,28 +1,22 @@
 const mongoose = require('mongoose');
 
-const TaskCardSchema = new mongoose.Schema({
+const ColumnSchema = new mongoose.Schema({
     title: {
         type: String,
         required: true,
         minlength: 1,
         trim: true
     },
-    _columnId: {
+    _boardId: {
         type: mongoose.Types.ObjectId,
         required: true
     }, 
     position: {
         type: Number,
         default: 0
-    },
-    description: {
-        type: String,
-        default: '',
-
     }
-
 })
 
-const TaskCard = mongoose.model('TaskCard', TaskCardSchema);
+const Column = mongoose.model('Column', ColumnSchema);
 
-module.exports = { TaskCard }
+module.exports = { Column }

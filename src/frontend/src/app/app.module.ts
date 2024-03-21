@@ -12,6 +12,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NewListComponent } from './pages/new-list/new-list.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
+import { NewProjectComponent } from './pages/new-project/new-project.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { ProjectListComponent } from './pages/project-list/project-list.componen
     KanbanViewComponent,
     NewListComponent,
     NewTaskComponent,
-    ProjectListComponent
+    ProjectListComponent,
+    NewProjectComponent
   ],
   imports: [
     BrowserModule,

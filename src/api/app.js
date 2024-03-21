@@ -7,6 +7,7 @@ const bodyParser = require('body-parser');
 
 // Load in mongoose models
 const { List, Task, Board, TaskCard } = require('./db/models');
+const { Column } = require('./db/models/column.model');
 
 // Load middleware
 app.use(bodyParser.json());
@@ -178,6 +179,21 @@ app.post('/boards', (req, res) => {
 });
 
 /**
+ * GET /boards/:id
+ * purpose: get a board with specified id
+ */
+app.get('/boards/:id', (req, res) => {
+    //return an array of all the boards in the database
+    Board.findOne({
+        _id: req.params.id
+    }).then((board) => {
+        res.send(board);
+    }).catch((e) => {
+        res.send(e);
+    })
+})
+
+/**
  * PATCH /boards/:id
  * purpose: update a specified board
  */
@@ -204,25 +220,25 @@ app.delete('/boards/:id', (req,res) => {
 });
 
 /**
- * GET /boards/:boardID/taskcards
- * Purpose: Get all taskcards in a specific board
+ * GET /boards/:boardId/columns
+ * Purpose: Get all columns in a specific board
  */
-app.get('/boards/:boardId/taskcards', (req, res) => {
-    // We want to return all tasks that belong to a specific list (specified by list ID)
-    TaskCard.find({
+app.get('/boards/:boardId/columns', (req, res) => {
+    // We want to return all columns that belong to a specific board (specified by board ID)
+    Column.find({
         _boardId: req.params.boardId
-    }).then((taskcards) => {
-        res.send(taskcards);
+    }).then((columns) => {
+        res.send(columns);
     })
 });
 
 /**
- * PATCH /boards/:boardId/taskcard/:taskcardId
+ * PATCH /boards/:boardId/columns/:columnId
  */
-app.patch('/boards/:boardId/taskcards/:taskcardId', (req, res) => {
-    // Update an existing taskcard (specified by taskcardId)
-    TaskCard.findOneAndUpdate({
-        _id: req.params.taskcardId,
+app.patch('/boards/:boardId/columns/:columnId', (req, res) => {
+    // Update an existing column (specified by columnId)
+    Column.findOneAndUpdate({
+        _id: req.params.columnId,
         _boardId: req.params.boardId
     }, {
         $set: req.body
@@ -232,17 +248,17 @@ app.patch('/boards/:boardId/taskcards/:taskcardId', (req, res) => {
 });
 
 /**
- * POST /boards/:boardId/taskcard
+ * POST /boards/:boardId/columns
  * Purpose: Create a new taskcard in a specific board
  */
-app.post('/boards/:boardId/taskcards', (req, res) => {
-    //We want to create a new taskcard in a board specified by boardId
-    let newTaskCard = new TaskCard({
+app.post('/boards/:boardId/columns', (req, res) => {
+    //We want to create a new columns in a board specified by boardId
+    let newColumn = new Column({
         title: req.body.title,
         _boardId: req.params.boardId
     });
-    newTaskCard.save().then((newTaskCardDoc) => {
-        res.send(newTaskCardDoc);
+    newColumn.save().then((newColumnDoc) => {
+        res.send(newColumnDoc);
     })
 })
 
@@ -250,10 +266,66 @@ app.post('/boards/:boardId/taskcards', (req, res) => {
  * DELETE /boards/:boardId/taskcard/:taskcardId
  * Purpose: Delete a taskcard
  */
-app.delete('/boards/:boardId/taskcards/:taskcardId', (req, res) => {
+app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
+    Column.findOneAndDelete({
+        _id: req.params.columnId,
+        _boardId: req.params.boardId
+    }).then ((removedColumnDoc) => {
+        res.send(removedColumnDoc);
+    })
+});
+
+/**
+ * GET /columns/:columnId/taskcards
+ * Purpose: Get all taskcards in a specific column
+ */
+app.get('/columns/:columnId/taskcards', (req, res) => {
+    // We want to return all columns that belong to a specific column (specified by column ID)
+    TaskCard.find({
+        _columnId: req.params.columnId
+    }).then((taskcards) => {
+        res.send(taskcards);
+    })
+});
+
+/**
+ * PATCH /columns/:columnId/taskcard/:taskcardId
+ */
+app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+    // Update an existing taskcard (specified by taskcardId)
+    TaskCard.findOneAndUpdate({
+        _id: req.params.taskcardId,
+        _columnId: req.params.columnId
+    }, {
+        $set: req.body
+    }).then(() => {
+        res.send({message: 'Updated Successfully.'});
+    })
+});
+
+/**
+ * POST /columns/:columnId/taskcards
+ * Purpose: Create a new taskcard in a specific column
+ */
+app.post('/columns/:columnId/taskcards', (req, res) => {
+    //We want to create a new taskcard in a column specified by columnId
+    let newTaskCard = new TaskCard({
+        title: req.body.title,
+        _columnId: req.params.columnId
+    });
+    newTaskCard.save().then((newTaskCardDoc) => {
+        res.send(newTaskCardDoc);
+    })
+})
+
+/**
+ * DELETE /columns/:columnId/taskcard/:taskcardId
+ * Purpose: Delete a taskcard
+ */
+app.delete('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
     TaskCard.findOneAndDelete({
         _id: req.params.taskcardId,
-        _boardId: req.params.boardId
+        _columnId: req.params.columnId
     }).then ((removedTaskCardDoc) => {
         res.send(removedTaskCardDoc);
     })

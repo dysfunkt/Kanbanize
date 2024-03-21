@@ -35,6 +35,19 @@ export class TaskService {
     return this.webReqService.get('boards');
   }
 
+  getBoard(boardId: string) {
+    return this.webReqService.get(`boards/${boardId}`);
+  }
+
+  getColumns(boardId: string) {
+    return this.webReqService.get(`boards/${boardId}/columns`);
+  }
+
+  createBoard(title: string) {
+    // send a web request to create a list
+    return this.webReqService.post('boards', { title });
+  }
+
   getTaskCards(boardId: string) {
     return this.webReqService.get(`boards/${boardId}/taskcards`);
   }

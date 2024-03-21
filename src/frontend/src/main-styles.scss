@@ -24,6 +24,9 @@ html {
 
 html, body {
     height: 100%;
+    &::-webkit-scrollbar {
+        display: none;
+      }
 }
 
 .centered-content {
@@ -41,4 +44,16 @@ html, body {
     background: white;
     border-radius: 5px;
     padding: 35px;
+}
+
+.root {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.app-name {
+    font-size: 28px;
+    font-family: "Lato", sans-serif;
+    font-weight: bold;
 }
