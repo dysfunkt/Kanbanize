@@ -48,6 +48,11 @@ export class TaskService {
     return this.webReqService.post('boards', { title });
   }
 
+  createColumn(boardId:string, title: string) {
+    // send a web request to create a list
+    return this.webReqService.post(`boards/${boardId}/columns`, { title });
+  }
+
   getTaskCards(boardId: string) {
     return this.webReqService.get(`boards/${boardId}/taskcards`);
   }

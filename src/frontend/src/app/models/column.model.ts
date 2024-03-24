@@ -1,5 +1,10 @@
-import { TaskCard } from "./taskcard.model";
+import { TaskCard } from './taskcard.model';
 
 export class Column {
-    constructor(public title: string, public taskcards: TaskCard[]) {}
+  constructor(
+    public _id: string,
+    public _boardId: string,
+    public title: string,
+    public taskcards: TaskCard[]
+  ) {}
 }

@@ -45,9 +45,16 @@ export class KanbanViewComponent implements OnInit{
   }
   
   onAddColumnClick() {
-    console.log('click');
-    let newColumn = new Column("New Column", [])
-    this.columns.push(newColumn);
+    this.route.params.subscribe(
+      (params: Params) => {
+        if (params['boardId'] != undefined) {
+          this.taskService.createColumn(params['boardId'], "New Column").subscribe(next => {
+            let column = next as Column;
+            this.columns.push(column);
+            console.log(column._id);
+          })
+        }
+    });
   }
 
 
