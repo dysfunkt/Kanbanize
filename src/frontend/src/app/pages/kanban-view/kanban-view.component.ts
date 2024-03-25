@@ -8,7 +8,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Board } from '../../models/board.model';
 import { TaskService } from '../../task.service';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Column } from '../../models/column.model';
 import { TaskCard } from '../../models/taskcard.model';
 
@@ -22,10 +22,9 @@ import { TaskCard } from '../../models/taskcard.model';
 export class KanbanViewComponent implements OnInit{
 
   board!: Board;
-  columns!: Column[];
   taskscards!: TaskCard[];
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute) {}
+  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router) {}
 
   ngOnInit() { 
     this.route.params.subscribe(
@@ -40,24 +39,24 @@ export class KanbanViewComponent implements OnInit{
   }
   columnInit(boardId:string) {
     this.taskService.getColumns(boardId).subscribe(next => {
-      this.columns = next as Column[];
+      this.board.columns = (next as Column[]).sort((a,b) => a.position.valueOf() - b.position.valueOf());
+      for (var column of this.board.columns) {
+        this.taskInit(column);
+      }
     })
   }
-  
-  onAddColumnClick() {
-    this.route.params.subscribe(
-      (params: Params) => {
-        if (params['boardId'] != undefined) {
-          this.taskService.createColumn(params['boardId'], "New Column").subscribe(next => {
-            let column = next as Column;
-            this.columns.push(column);
-            console.log(column._id);
-          })
-        }
-    });
+  taskInit(column: Column) { 
+    this.taskService.getTaskCards(column._id).subscribe(next => {
+      column.taskcards = (next as TaskCard[]).sort((a,b) => a.position.valueOf() - b.position.valueOf());
+    })
   }
 
-
+  addTaskClick(column: Column) {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/new-task', params['boardId'], column._id]);
+    });
+  }
   drop(event: CdkDragDrop<TaskCard[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);

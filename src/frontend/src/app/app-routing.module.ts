@@ -13,7 +13,7 @@ const routes: Routes = [
   { path: 'kanban-view/:boardId', component: KanbanViewComponent },
   { path: 'project-list', component: ProjectListComponent },
   { path: 'new-list', component: NewListComponent },
-  { path: 'new-task', component: NewTaskComponent },
+  { path: 'new-task/:boardId/:columnId', component: NewTaskComponent },
   { path: 'new-project', component: NewProjectComponent },
   { path: 'lists', component: BoardViewComponent},
   { path: 'lists/:listId', component: BoardViewComponent},

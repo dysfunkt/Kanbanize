@@ -21,9 +21,9 @@ export class NewProjectComponent {
     });
   }
   initColumns(boardId: string) {
-    this.taskService.createColumn(boardId, "To Do").subscribe(() => {});
-    this.taskService.createColumn(boardId, "In Progress").subscribe(() => {});
-    this.taskService.createColumn(boardId, "Needs Review").subscribe(() => {});
-    this.taskService.createColumn(boardId, "Complete").subscribe(() => {});
+    this.taskService.createColumn(boardId, "To Do", 0).subscribe(() => {});
+    this.taskService.createColumn(boardId, "In Progress", 1).subscribe(() => {});
+    this.taskService.createColumn(boardId, "Needs Review", 2).subscribe(() => {});
+    this.taskService.createColumn(boardId, "Complete", 3).subscribe(() => {});
   }
 }

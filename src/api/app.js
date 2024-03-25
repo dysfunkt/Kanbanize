@@ -255,7 +255,8 @@ app.post('/boards/:boardId/columns', (req, res) => {
     //We want to create a new columns in a board specified by boardId
     let newColumn = new Column({
         title: req.body.title,
-        _boardId: req.params.boardId
+        _boardId: req.params.boardId,
+        position: req.body.position
     });
     newColumn.save().then((newColumnDoc) => {
         res.send(newColumnDoc);

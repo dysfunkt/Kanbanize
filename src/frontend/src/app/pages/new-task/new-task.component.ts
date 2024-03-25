@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router} from '@angular/router';
 import { Task } from '../../models/task.model';
@@ -27,5 +27,8 @@ export class NewTaskComponent implements OnInit{
       const newTask: Task = next as Task;
       this.router.navigate(['../'], {relativeTo: this.route});
     });
+  }
+  cancel() {
+    
   }
 }
