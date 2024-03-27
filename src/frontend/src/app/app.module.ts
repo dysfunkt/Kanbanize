@@ -7,12 +7,14 @@ import { BoardViewComponent } from './pages/board-view/board-view.component';
 import { KanbanViewComponent } from './pages/kanban-view/kanban-view.component';
 
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     BoardViewComponent,
-    KanbanViewComponent
+    KanbanViewComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
