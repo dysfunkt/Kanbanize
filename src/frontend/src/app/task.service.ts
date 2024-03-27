@@ -62,7 +62,10 @@ export class TaskService {
   }
 
   createTaskCard(columnId:string, title: string, position: Number) {
-    return this.webReqService.post(`columns/${columnId}/taskcards`, { title, position });
+    return this.webReqService.post(`columns/${columnId}/taskcards`, { 
+      title: title, 
+      position: position 
+    });
   }
   
   updateTaskCardPosition(columnId: string, taskcardId: string, newColumnId: string, position: Number) {

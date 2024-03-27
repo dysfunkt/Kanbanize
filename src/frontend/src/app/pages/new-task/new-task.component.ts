@@ -31,7 +31,7 @@ export class NewTaskComponent implements OnInit{
   }
 
   createTask(title: string) {
-    this.taskService.createTaskCard(this.column._id, title, this.column.taskcards.length).subscribe(() => {});
+    this.taskService.createTaskCard(this.column._id, title, new Number(this.column.taskcards.length)).subscribe(() => {});
     this.router.navigate(['/kanban-view', this.boardId]);
   }
 

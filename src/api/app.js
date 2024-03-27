@@ -329,7 +329,8 @@ app.post('/columns/:columnId/taskcards', (req, res) => {
     //We want to create a new taskcard in a column specified by columnId
     let newTaskCard = new TaskCard({
         title: req.body.title,
-        _columnId: req.params.columnId
+        _columnId: req.params.columnId,
+        position: req.body.position
     });
     newTaskCard.save().then((newTaskCardDoc) => {
         res.send(newTaskCardDoc);
