@@ -43,6 +43,10 @@ export class TaskService {
     return this.webReqService.get(`boards/${boardId}/columns`);
   }
 
+  getColumn(boardId: string, columnId: string) {
+    return this.webReqService.get(`boards/${boardId}/columns/${columnId}`);
+  }
+
   createBoard(title: string) {
     // send a web request to create a list
     return this.webReqService.post('boards', { title });
@@ -55,5 +59,16 @@ export class TaskService {
 
   getTaskCards(columnId: string) {
     return this.webReqService.get(`columns/${columnId}/taskcards`);
+  }
+
+  createTaskCard(columnId:string, title: string, position: Number) {
+    return this.webReqService.post(`columns/${columnId}/taskcards`, { title, position });
+  }
+  
+  updateTaskCardPosition(columnId: string, taskcardId: string, newColumnId: string, position: Number) {
+    return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
+      _columnId: newColumnId,
+      position: position
+    })
   }
 }

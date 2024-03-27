@@ -64,20 +64,11 @@
         flex-grow: 1;
         flex-basis: 0;
 
-        overflow-y: auto;
-        &::-webkit-scrollbar {
-          width: 12px;
-        }
-        &::-webkit-scrollbar-thumb {
-          background: $purple;
-          border-radius: 20px;
-        }
-
+        
         min-width: 300px;
         max-width: 500px;
         margin: 50px;
         padding: 25px;
-
         border-radius: 4px;
 
         background: rgba(white, 0.5);
@@ -101,7 +92,7 @@
           .button-container{
             display: flex;
             margin-left: auto;
-
+            margin-right: 12px;
             .add-task-button {
               height: auto;
               width: auto;
@@ -131,6 +122,16 @@
 
 .tasks-container {
   flex-grow: 1;
+  padding-right: 5px;
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 5px;
+    margin-left: 5px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $purple;
+    border-radius: 20px;
+  }
 }
 
 .task {
@@ -139,11 +140,22 @@
   background: white;
   border-bottom: solid 1px #ddd;
   border-radius: 4px;
-
+  min-height: 70px;
   margin-bottom: 15px;
 
   box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.05),
     0 3px 14px 2px rgba(0, 0, 0, 0.05);
+    .task-header {
+      display: flex;
+      flex-direction: row;
+      .task-title {
+        
+      }
+    }
+
+    .task-footer {
+
+    }
 }
 
 .cdk-drag-preview {

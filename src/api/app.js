@@ -229,6 +229,23 @@ app.get('/boards/:boardId/columns', (req, res) => {
         _boardId: req.params.boardId
     }).then((columns) => {
         res.send(columns);
+    }).catch((e) => {
+        res.send(e);
+    })
+});
+
+/**
+ * GET /boards/:boardId/columns/:columnId
+ */
+app.get('/boards/:boardId/columns/:columnId', (req, res) => {
+    // get an existing column (specified by columnId)
+    Column.findOne({
+        _id: req.params.columnId,
+        _boardId: req.params.boardId
+    }).then((column) => {
+        res.send(column);
+    }).catch((e) => {
+        res.send(e);
     })
 });
 
@@ -299,8 +316,8 @@ app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
         _columnId: req.params.columnId
     }, {
         $set: req.body
-    }).then(() => {
-        res.send({message: 'Updated Successfully.'});
+    }).then((taskcard) => {
+        res.send(taskcard);
     })
 });
 

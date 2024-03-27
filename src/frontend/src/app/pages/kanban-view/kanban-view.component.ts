@@ -22,7 +22,6 @@ import { TaskCard } from '../../models/taskcard.model';
 export class KanbanViewComponent implements OnInit{
 
   board!: Board;
-  taskscards!: TaskCard[];
 
   constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router) {}
 
@@ -57,6 +56,7 @@ export class KanbanViewComponent implements OnInit{
         this.router.navigate(['/new-task', params['boardId'], column._id]);
     });
   }
+  
   drop(event: CdkDragDrop<TaskCard[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
@@ -68,5 +68,13 @@ export class KanbanViewComponent implements OnInit{
         event.currentIndex,
       );
     }
+    for(var column of this.board.columns) {
+      let index = 0
+      for(var task of column.taskcards) {
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, column._id, index).subscribe(() => {});
+        index++
+      }
+    }
+    
   }
 }

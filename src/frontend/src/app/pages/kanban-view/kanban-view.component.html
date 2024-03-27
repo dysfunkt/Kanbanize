@@ -37,7 +37,17 @@
                     [cdkDropListData]="column.taskcards"
                     (cdkDropListDropped)="drop($event)">
                         <div class="task" *ngFor="let taskcard of column.taskcards" cdkDrag>
-                            {{ taskcard.title }}
+                            <div class="task-header">
+                                <div class="task-title">
+                                    {{ taskcard.title }}
+                                </div>
+                                <div class="field is-grouped">
+                                    
+                                </div>
+                            </div>
+                            <div class="task-footer">
+
+                            </div>
                         </div>
 
                     </div>

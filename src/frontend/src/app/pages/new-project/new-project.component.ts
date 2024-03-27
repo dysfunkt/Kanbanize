@@ -24,6 +24,6 @@ export class NewProjectComponent {
     this.taskService.createColumn(boardId, "To Do", 0).subscribe(() => {});
     this.taskService.createColumn(boardId, "In Progress", 1).subscribe(() => {});
     this.taskService.createColumn(boardId, "Needs Review", 2).subscribe(() => {});
-    this.taskService.createColumn(boardId, "Complete", 3).subscribe(() => {});
+    this.taskService.createColumn(boardId, "Completed", 3).subscribe(() => {});
   }
 }
