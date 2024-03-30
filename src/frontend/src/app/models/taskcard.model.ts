@@ -4,6 +4,7 @@ export class TaskCard {
     public _columnId: string,
     public title: string,
     public position: Number,
-    public description: string
+    public dueDate: Date,
+    public priority: Boolean
   ) {}
 }

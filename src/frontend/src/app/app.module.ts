@@ -13,6 +13,8 @@ import { NewListComponent } from './pages/new-list/new-list.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
 import { NewProjectComponent } from './pages/new-project/new-project.component';
+import { EditTaskComponent } from './pages/edit-task/edit-task.component';
+import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +24,9 @@ import { NewProjectComponent } from './pages/new-project/new-project.component';
     NewListComponent,
     NewTaskComponent,
     ProjectListComponent,
-    NewProjectComponent
+    NewProjectComponent,
+    EditTaskComponent,
+    DeleteTaskComponent
   ],
   imports: [
     BrowserModule,

@@ -30,12 +30,32 @@ export class NewTaskComponent implements OnInit{
     )
   }
 
-  createTask(title: string) {
-    this.taskService.createTaskCard(this.column._id, title, new Number(this.column.taskcards.length)).subscribe(() => {});
+  createTask() {
+    const titleInput: HTMLInputElement = document.getElementById('taskTitleInput') as HTMLInputElement;
+    const dateInput: HTMLInputElement = document.getElementById('taskDateInput') as HTMLInputElement;
+    const date: Date = new Date(dateInput.value)
+    if (titleInput.value == '') {
+      const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+      titleDialog.show();
+    } 
+    else if (isNaN(date.getTime())) {
+      const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
+      dateDialog.show();
+    }
+    else {
+      this.taskService.createTaskCard(this.column._id, titleInput.value, new Number(this.column.taskcards.length), date).subscribe(() => {});
     this.router.navigate(['/kanban-view', this.boardId]);
+    }
   }
 
   cancel() {
     this.router.navigate(['/kanban-view', this.boardId]);
+  }
+
+  close() {
+    const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+    const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
+    titleDialog.close();
+    dateDialog.close()
   }
 }

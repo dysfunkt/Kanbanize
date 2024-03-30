@@ -9,6 +9,7 @@ export class TaskService {
 
   constructor(private webReqService: WebRequestService) { }
 
+  //list services
   getLists() {
     return this.webReqService.get('lists');
   }
@@ -30,7 +31,7 @@ export class TaskService {
       completed: !task.completed
     }); 
   }
-
+//kanban services
   getBoards() {
     return this.webReqService.get('boards');
   }
@@ -61,17 +62,43 @@ export class TaskService {
     return this.webReqService.get(`columns/${columnId}/taskcards`);
   }
 
-  createTaskCard(columnId:string, title: string, position: Number) {
+  getTaskCard(columnId: string, taskcardId: string) {
+    return this.webReqService.get(`columns/${columnId}/taskcards/${taskcardId}`);
+  }
+
+  createTaskCard(columnId:string, title: string, position: Number, date: Date) {
     return this.webReqService.post(`columns/${columnId}/taskcards`, { 
       title: title, 
-      position: position 
+      position: position,
+      dueDate: date
     });
   }
+
+  updateTaskCardDetails(columnId: string, taskcardId: string, title:string, date: Date) {
+    return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
+      title: title,
+      dueDate: date
+    })
+  }
   
+  updateTaskCardPriority(columnId: string, taskcardId: string, priority: Boolean) {
+    return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
+      priority: priority
+    })
+  }
+  
+  updateBoardTitle(boardId: string, title: string) {
+    return this.webReqService.patch(`boards/${boardId}`, { title: title })
+  }
+
   updateTaskCardPosition(columnId: string, taskcardId: string, newColumnId: string, position: Number) {
     return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
       _columnId: newColumnId,
       position: position
     })
+  }
+
+  deleteTaskCard(columnId: string, taskcardId: string) {
+    return this.webReqService.delete(`columns/${columnId}/taskcards/${taskcardId}`)
   }
 }

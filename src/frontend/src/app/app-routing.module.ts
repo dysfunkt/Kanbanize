@@ -6,6 +6,8 @@ import { NewListComponent } from './pages/new-list/new-list.component';
 import { NewTaskComponent } from './pages/new-task/new-task.component';
 import { ProjectListComponent } from './pages/project-list/project-list.component';
 import { NewProjectComponent } from './pages/new-project/new-project.component';
+import { EditTaskComponent } from './pages/edit-task/edit-task.component';
+import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
 
 const routes: Routes = [
   { path: 'board-view', component: BoardViewComponent },
@@ -14,6 +16,8 @@ const routes: Routes = [
   { path: 'project-list', component: ProjectListComponent },
   { path: 'new-list', component: NewListComponent },
   { path: 'new-task/:boardId/:columnId', component: NewTaskComponent },
+  { path: 'edit-task/:boardId/:columnId/:taskcardId', component: EditTaskComponent },
+  { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
   { path: 'new-project', component: NewProjectComponent },
   { path: 'lists', component: BoardViewComponent},
   { path: 'lists/:listId', component: BoardViewComponent},

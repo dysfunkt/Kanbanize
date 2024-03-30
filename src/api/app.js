@@ -273,7 +273,7 @@ app.post('/boards/:boardId/columns', (req, res) => {
     let newColumn = new Column({
         title: req.body.title,
         _boardId: req.params.boardId,
-        position: req.body.position
+        position: req.body.position,
     });
     newColumn.save().then((newColumnDoc) => {
         res.send(newColumnDoc);
@@ -307,6 +307,21 @@ app.get('/columns/:columnId/taskcards', (req, res) => {
 });
 
 /**
+ * GET /columns/:columnId/taskcards/:taskcardId
+ * Purpose: Get a taskcards with the specified columnId and id
+ */
+app.get('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+    // We want to return all columns that belong to a specific column (specified by column ID)
+    TaskCard.findOne({
+        _id: req.params.taskcardId,
+        _columnId: req.params.columnId
+        
+    }).then((taskcard) => {
+        res.send(taskcard);
+    })
+});
+
+/**
  * PATCH /columns/:columnId/taskcard/:taskcardId
  */
 app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
@@ -330,7 +345,8 @@ app.post('/columns/:columnId/taskcards', (req, res) => {
     let newTaskCard = new TaskCard({
         title: req.body.title,
         _columnId: req.params.columnId,
-        position: req.body.position
+        position: req.body.position,
+        dueDate: req.body.dueDate
     });
     newTaskCard.save().then((newTaskCardDoc) => {
         res.send(newTaskCardDoc);

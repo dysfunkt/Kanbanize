@@ -9,10 +9,20 @@
     <div class="board">
 
         <div class="board-bar">
-            
-            <div class="board-name">
-                {{ board.title }}
+            <div class="board-name-container">
+                <div class="board-name" id="title-container">
+                    {{ board.title }}
+                </div>
+                <input class="board-name-input input" type="text" placeholder="{{ board.title }}" id="title-input">
+                <button class="title-button edit" (click)="editTitleClick()" id="title-edit">
+                    <img src="../../../assets/edit-icon.svg">
+                </button>
+                <button class="title-button save" (click)="saveTitleClick()" id="title-save">
+                    <img src="../../../assets/save-icon.svg">
+                </button>
             </div>
+            
+            
             <button class="button-back" routerLink="/project-list">← Back to Project List</button>
         </div>
 
@@ -41,12 +51,26 @@
                                 <div class="task-title">
                                     {{ taskcard.title }}
                                 </div>
+
                                 <div class="field is-grouped">
-                                    
+                                    <button class="task-button priority" *ngIf="taskcard.priority" (click)="togglePriority(taskcard)">
+                                        <img class="task-icons" src="../../../assets/flag-icon-red.svg">
+                                    </button>
+                                    <button class="task-button button-hover" *ngIf="!taskcard.priority" (click)="togglePriority(taskcard)">
+                                        <img class="task-icons" src="../../../assets/flag-icon-grey.svg">
+                                    </button>
+                                    <button class="task-button button-hover" (click)="editTaskClick(taskcard)">
+                                        <img class="task-icons" src="../../../assets/edit-icon.svg">
+                                    </button>
+                                    <button class="task-button button-hover" (click)="deleteTaskcardConfirm(taskcard)">
+                                        <img class="task-icons" src="../../../assets/trash-icon-grey.svg">
+                                    </button>
                                 </div>
                             </div>
                             <div class="task-footer">
-
+                                <div class="due-date">
+                                    Due: {{ formatDate(taskcard.dueDate) }}
+                                </div>
                             </div>
                         </div>
 
