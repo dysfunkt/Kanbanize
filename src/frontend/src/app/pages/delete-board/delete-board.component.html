@@ -1,0 +1,12 @@
+<div class="centered-content">
+    <div class="modal-box">
+      <h1 class="title">Delete Board</h1>
+      <p>Confirm delete board '{{ board.title }}'?</p>
+      
+      <br /><br />
+      <div class="buttons is-right">
+        <button class="button is-medium" (click)="cancel()">Cancel</button>
+        <button class="button is-primary has-text-white is-medium" (click)="deleteBoard()">Save</button>
+      </div>
+    </div>
+  </div>

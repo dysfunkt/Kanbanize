@@ -14,7 +14,8 @@ export class EditTaskComponent implements OnInit {
   constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, ) {}
 
   boardId!: string;
-  taskcard!: TaskCard
+  taskcard!: TaskCard;
+  
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {

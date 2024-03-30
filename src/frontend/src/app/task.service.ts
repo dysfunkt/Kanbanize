@@ -101,4 +101,8 @@ export class TaskService {
   deleteTaskCard(columnId: string, taskcardId: string) {
     return this.webReqService.delete(`columns/${columnId}/taskcards/${taskcardId}`)
   }
+
+  deleteBoard(boardId: string) {
+    return this.webReqService.delete(`boards/${boardId}`)
+  }
 }

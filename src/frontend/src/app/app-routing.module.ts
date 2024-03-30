@@ -8,6 +8,7 @@ import { ProjectListComponent } from './pages/project-list/project-list.componen
 import { NewProjectComponent } from './pages/new-project/new-project.component';
 import { EditTaskComponent } from './pages/edit-task/edit-task.component';
 import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
+import { DeleteBoardComponent } from './pages/delete-board/delete-board.component';
 
 const routes: Routes = [
   { path: 'board-view', component: BoardViewComponent },
@@ -18,6 +19,7 @@ const routes: Routes = [
   { path: 'new-task/:boardId/:columnId', component: NewTaskComponent },
   { path: 'edit-task/:boardId/:columnId/:taskcardId', component: EditTaskComponent },
   { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
+  { path: 'delete-board/:boardId', component: DeleteBoardComponent},
   { path: 'new-project', component: NewProjectComponent },
   { path: 'lists', component: BoardViewComponent},
   { path: 'lists/:listId', component: BoardViewComponent},

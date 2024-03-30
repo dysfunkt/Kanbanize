@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import {
   CdkDragDrop,
   moveItemInArray,
@@ -23,6 +23,7 @@ import { formatDate } from '@angular/common';
 export class KanbanViewComponent implements OnInit{
 
   board!: Board;
+  isActive: Boolean = false;
 
   constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router) {}
 
@@ -130,6 +131,12 @@ export class KanbanViewComponent implements OnInit{
     });
   }
   
+  deleteBoardConfirm() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/delete-board', params['boardId']]);
+    });
+  }
   
   formatDate(date: Date) {
     if (!date) {
@@ -138,5 +145,17 @@ export class KanbanViewComponent implements OnInit{
       return formatDate(date, 'dd/MM/yyyy', 'en-GB');
     }
     
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const dropdown: HTMLDivElement = document.getElementById("dropdown") as HTMLDivElement;
+    if ((event.target == document.getElementById("dropdown-button") || event.target == document.getElementById("dropdown-icon"))) {
+      dropdown.classList.add('is-active');
+    } else {
+      if (dropdown.classList.contains('is-active')) {
+        dropdown.classList.remove('is-active')
+      }
+    }
   }
 }
