@@ -151,6 +151,9 @@ export class KanbanViewComponent implements OnInit{
   onDocumentClick(event: MouseEvent) {
     const dropdown: HTMLDivElement = document.getElementById("dropdown") as HTMLDivElement;
     if ((event.target == document.getElementById("dropdown-button") || event.target == document.getElementById("dropdown-icon"))) {
+      if (dropdown.classList.contains('is-active')) {
+        dropdown.classList.remove('is-active')
+      } else
       dropdown.classList.add('is-active');
     } else {
       if (dropdown.classList.contains('is-active')) {
