@@ -1,40 +1,133 @@
 <div class="root">
-    <div class="navbar has-background-dark">
-        <div class="navbar-brand">
-            <div class="navbar-item">
-                <h1 class="app-name has-gradient-text">Kanbanize</h1>
-            </div>
-        </div>
+  <div class="navbar has-background-dark">
+    <div class="navbar-brand">
+      <div class="navbar-item">
+        <h1 class="app-name has-gradient-text">Kanbanize</h1>
+      </div>
     </div>
-    <div class="board">
-
-        <div class="board-bar">
-            <p class="board-name">
-                {{ board.name }}
-            </p>
+  </div>
+  <div class="board">
+    <div class="board-bar">
+      <div class="board-name-container">
+        <div class="board-name" id="title-container">
+          {{ board.title }}
         </div>
+        <input
+          class="board-name-input input"
+          type="text"
+          placeholder="{{ board.title }}"
+          id="title-input"
+        />
+        <button
+          class="title-button edit"
+          (click)="editTitleClick()"
+          id="title-edit"
+        >
+          <img src="../../../assets/edit-icon.svg" />
+        </button>
+        <button
+          class="title-button save"
+          (click)="saveTitleClick()"
+          id="title-save"
+        >
+          <img src="../../../assets/save-icon.svg" />
+        </button>
+      </div>
 
-        <div class="board-wrapper">
+			<div class="dropdown" id="dropdown">
+				<div class="dropdown-trigger">
+					<button class="button is-small settings-button" id="dropdown-button" aria-haspopup="true" aria-controls="dropdown-menu">
+						<img id="dropdown-icon" src="../../../assets/gear-icon.svg" />
+					</button>
+				</div>
+				<div class="dropdown-menu" id="dropdown-menu" role="menu">
+					<div class="dropdown-content">
+						<a class="dropdown-item" style="color: red;" (click)="deleteBoardConfirm()"> Delete Board </a>
+					</div>
+				</div>
+			</div>
 
-            <div class="board-columns" cdkDropListGroup>
+      <button class="button-back" routerLink="/project-list">
+        ← Back to Project List
+      </button>
+    </div>
 
-                <div class="board-column" *ngFor="let column of board.columns">
-                    <div class="column-title">
-                        {{ column.name }}
-                    </div>
-
-                    <div class="tasks-container"
-                    cdkDropList
-                    #todoList="cdkDropList"
-                    [cdkDropListData]="column.tasks"
-                    (cdkDropListDropped)="drop($event)">
-                        <div class="task" *ngFor="let item of column.tasks" cdkDrag>
-                            {{ item }}
-                        </div>
-
-                    </div>
+    <div class="board-wrapper">
+      <div class="board-columns" cdkDropListGroup>
+        <div class="board-column" *ngFor="let column of board.columns">
+          <div class="column-header">
+            <div class="column-title">
+              {{ column.title }}
+            </div>
+            <div class="button-container">
+              <button class="add-task-button" (click)="addTaskClick(column)">
+                +
+              </button>
+            </div>
+          </div>
+          <div
+            class="tasks-container"
+            cdkDropList
+            #todoList="cdkDropList"
+            [cdkDropListData]="column.taskcards"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <div class="task" *ngFor="let taskcard of column.taskcards" cdkDrag>
+              <div class="task-header">
+                <div class="task-title">
+                  {{ taskcard.title }}
                 </div>
+
+                <div class="field is-grouped">
+                  <button
+                    class="task-button priority"
+                    *ngIf="taskcard.priority"
+                    (click)="togglePriority(taskcard)"
+                  >
+                    <img
+                      class="task-icons"
+                      src="../../../assets/flag-icon-red.svg"
+                    />
+                  </button>
+                  <button
+                    class="task-button button-hover"
+                    *ngIf="!taskcard.priority"
+                    (click)="togglePriority(taskcard)"
+                  >
+                    <img
+                      class="task-icons"
+                      src="../../../assets/flag-icon-grey.svg"
+                    />
+                  </button>
+                  <button
+                    class="task-button button-hover"
+                    (click)="editTaskClick(taskcard)"
+                  >
+                    <img
+                      class="task-icons"
+                      src="../../../assets/edit-icon.svg"
+                    />
+                  </button>
+                  <button
+                    class="task-button button-hover"
+                    (click)="deleteTaskcardConfirm(taskcard)"
+                  >
+                    <img
+                      class="task-icons"
+                      src="../../../assets/trash-icon-grey.svg"
+                    />
+                  </button>
+                </div>
+              </div>
+              <div class="task-footer">
+                <div class="due-date">
+                  Due: {{ formatDate(taskcard.dueDate) }}
+                </div>
+              </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>

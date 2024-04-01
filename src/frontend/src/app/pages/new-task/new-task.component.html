@@ -1,0 +1,51 @@
+<dialog class="dialog-box" id="titleError">
+  <div class="dialog-content">
+    <h1><b>Error</b></h1>
+    <p>
+      Input a title!
+    </p>
+    <button class="button is-small" (click)="close()">Ok</button>
+  </div>
+</dialog>
+<dialog class="dialog-box" id="dateError">
+  <div class="dialog-content">
+    <h1><b>Error</b></h1>
+    <p>
+      Input a valid date!
+    </p>
+    <button class="button is-small" (click)="close()">Ok</button>
+  </div>
+</dialog>
+<div class="centered-content">
+  <div class="modal-box">
+    <h1 class="title">Create a new task</h1>
+    <div class="field">
+      <label class="label">Task Title</label>
+      <input
+      id="taskTitleInput"
+      class="input has-background-light is-medium"
+      type="text"
+      placeholder="Enter task name"
+    />
+    </div>
+    <div class="field">
+      <label class="label">Task Due Date</label>
+      <input
+      id="taskDateInput"
+      class="input has-background-light is-medium"
+      type="date"
+    />
+    </div>
+    
+    <br /><br />
+    <div class="buttons is-right">
+      <button class="button is-medium" (click)="cancel()">Cancel</button>
+      <button
+        class="button is-primary has-text-white is-medium"
+        (click)="createTask()"
+      >
+        Create
+      </button>
+    </div>
+  </div>
+</div>

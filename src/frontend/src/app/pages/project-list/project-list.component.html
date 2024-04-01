@@ -1,0 +1,28 @@
+<div class="root">
+    <div class="navbar has-background-dark">
+        <div class="navbar-brand">
+            <div class="navbar-item">
+                <h1 class="app-name has-gradient-text">Kanbanize</h1>
+            </div>
+        </div>
+    </div>
+    <div class="centered-content">
+        <div class="project-manager-container">
+            <div class="project-list-container has-background-white"> 
+                <h1 class="title has-text-primary">
+                    Projects
+                </h1>
+    
+                <!-- Project Elements -->
+                <div class="project-menu">
+                    <a class="project-menu-item" *ngFor="let project of boards" [routerLink]="['/kanban-view', project._id]">
+                        <p>{{project.title}}</p>
+                    </a>
+    
+                </div>
+    
+                <button class="button is-primary has-text-white" routerLink="/new-project">+ New Project</button>
+            </div>
+        </div>
+    </div>
+</div>

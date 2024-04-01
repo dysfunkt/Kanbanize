@@ -1,7 +1,8 @@
 # Kanbanize
 This is a project that uses the Angular framework.
 ## Dependencies required
-- [Angular CLI](https://radixweb.com/blog/how-to-install-angular-on-windows)
+- [Angular CLI 17.2.3 & Node 20.11.1](https://radixweb.com/blog/how-to-install-angular-on-windows)
+- MongoDB 7.0.6
 
 ## How to run localhost
 Navigate to ./src/frontend and run `ng serve` then go to the localhost link. Any changes made there will auto update. 
