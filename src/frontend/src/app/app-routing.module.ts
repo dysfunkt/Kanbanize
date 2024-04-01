@@ -9,6 +9,8 @@ import { NewProjectComponent } from './pages/new-project/new-project.component';
 import { EditTaskComponent } from './pages/edit-task/edit-task.component';
 import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
 import { DeleteBoardComponent } from './pages/delete-board/delete-board.component';
+import { LoginComponent } from './pages/login/login.component';
+
 
 const routes: Routes = [
   { path: 'board-view', component: BoardViewComponent },
@@ -25,6 +27,8 @@ const routes: Routes = [
   { path: 'lists/:listId', component: BoardViewComponent},
   { path: 'lists/:listId/new-task', component: NewTaskComponent },
   { path: '', redirectTo: '/project-list', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent},
+  { path: '', redirectTo: '/kanban-view', pathMatch: 'full' },
 ];
 
 @NgModule({
