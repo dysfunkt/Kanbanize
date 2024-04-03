@@ -15,10 +15,12 @@
     
                 <!-- Project Elements -->
                 <div class="project-menu">
-                    <a class="project-menu-item" *ngFor="let project of boards" [routerLink]="['/kanban-view', project._id]">
-                        <p>{{project.title}}</p>
-                    </a>
-    
+                    <div class="menu-container" *ngIf="boards">
+                        <a class="project-menu-item" *ngFor="let project of boards" [routerLink]="['/kanban-view', project._id]">
+                            <p>{{project.title}}</p>
+                        </a>
+                        <h3 class="empty-state" *ngIf="boards.length === 0">You have no projects! Create a new project to get started.</h3>
+                    </div>
                 </div>
     
                 <button class="button is-primary has-text-white" routerLink="/new-project">+ New Project</button>

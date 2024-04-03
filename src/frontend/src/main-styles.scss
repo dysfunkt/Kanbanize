@@ -78,3 +78,9 @@ html, body {
     font-family: "Lato", sans-serif;
     font-weight: bold;
 }
+
+.has-gradient-text {
+    background: -webkit-linear-gradient($pink, $dark-purple);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

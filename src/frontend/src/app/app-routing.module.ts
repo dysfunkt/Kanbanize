@@ -26,9 +26,9 @@ const routes: Routes = [
   { path: 'lists', component: BoardViewComponent},
   { path: 'lists/:listId', component: BoardViewComponent},
   { path: 'lists/:listId/new-task', component: NewTaskComponent },
-  { path: '', redirectTo: '/project-list', pathMatch: 'full' },
   { path: 'login', component: LoginComponent},
-  { path: '', redirectTo: '/kanban-view', pathMatch: 'full' },
+  { path: '', redirectTo: '/project-list', pathMatch: 'full' },
+
 ];
 
 @NgModule({
