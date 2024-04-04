@@ -7,7 +7,10 @@ const BoardSchema = new mongoose.Schema({
         minlength: 1,
         trim: true
     },
-    
+    _userId: {
+        type: mongoose.Types.ObjectId,
+        required: true
+    },
 })
 
 const Board = mongoose.model('Board', BoardSchema);

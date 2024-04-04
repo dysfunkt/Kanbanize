@@ -53,7 +53,7 @@ UserSchema.methods.generateAccessAuthToken = function() {
     const user = this;
     return new Promise((resolve, reject) => {
         //create the JSON web token and returnm that
-        jwt.sign({ _id: user._id.toHexString() }, jwtSecret, { expiresIn: "15m" }, (err, token) => {
+        jwt.sign({ _id: user._id.toHexString() }, jwtSecret, { expiresIn: "15s" }, (err, token) => {
             if (!err) {
                 resolve(token);
             } else {
@@ -90,6 +90,10 @@ UserSchema.methods.createSession = function() {
 }
 
 /* MODEL METHODS (static methods) */
+UserSchema.statics.getJWTSecret = () => {
+    return jwtSecret;
+}
+
 UserSchema.statics.findByIdAndToken = function(_id, token) {
     const User = this;
 

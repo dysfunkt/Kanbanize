@@ -2,14 +2,14 @@ import { Injectable } from '@angular/core';
 import { WebRequestService } from './web-request.service';
 import { Router } from '@angular/router';
 import { shareReplay, tap } from 'rxjs';
-import { HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  constructor(private webService: WebRequestService, private router: Router) { }
+  constructor(private webService: WebRequestService, private router: Router, private http: HttpClient) { }
 
   login(username: string, password: string) {
     return this.webService.login(username, password).pipe(
@@ -24,14 +24,20 @@ export class AuthService {
 
   logout() {
     this.removeSession();
+
+    this.router.navigateByUrl('/login');
   }
 
   getAccessToken() {
-    return localStorage.getItem('x-access-item');
+    return localStorage.getItem('x-access-token');
   }
 
   getRefreshToken() {
-    return localStorage.getItem('x-refresh-item');
+    return localStorage.getItem('x-refresh-token');
+  }
+
+  getUserId() {
+    return localStorage.getItem('user-id');
   }
 
   setAccessToken(accessToken: string) {
@@ -40,14 +46,32 @@ export class AuthService {
 
   private setSession(userId: string, accessToken: string, refreshToken: string) {
     localStorage.setItem('user-id', userId);
-    localStorage.setItem('access-token', accessToken);
-    localStorage.setItem('refresh-token', refreshToken);
+    localStorage.setItem('x-access-token', accessToken);
+    localStorage.setItem('x-refresh-token', refreshToken);
   }
 
   private removeSession() {
     localStorage.removeItem('user-id');
-    localStorage.removeItem('access-token');
-    localStorage.removeItem('refresh-token');
+    localStorage.removeItem('x-access-token');
+    localStorage.removeItem('x-refresh-token');
   }
 
+  getNewAccessToken() {
+    const refreshToken = this.getRefreshToken();
+    const id = this.getUserId()
+    const headers = {
+      'x-refresh-token': refreshToken ? refreshToken : '',
+      '_id': id ? id : ''
+    };
+
+    return this.http.get(`${this.webService.ROOT_URL}/users/me/access-token`, { 
+      headers,
+      observe: 'response'
+    }).pipe(
+      tap((res: HttpResponse<any>) => {
+        const accessToken = this.getAccessToken();
+        this.setAccessToken(accessToken ? accessToken : '');
+      })
+    )
+  }
 }

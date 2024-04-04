@@ -1,5 +1,6 @@
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
 
 const { mongoose } = require('./db/mongoose');
 
@@ -17,10 +18,25 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token, x-refresh-token");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token, x-refresh-token, _id");
     res.header('Access-Control-Expose-Headers', 'x-access-token, x-refresh-token');
     next();
 });
+
+//check whether the request has a valid jwt access token
+let authenticate = (req, res, next) => {
+    let token = req.header('x-access-token');
+
+    jwt.verify(token, User.getJWTSecret(), (err, decoded) => {
+        if(err) {
+            //jwt is invalid, DO NOT AUTHENTHICATE
+            res.status(401).send(err);
+        } else {
+            req.user_id = decoded._id;
+            next()
+        }
+    });
+}
 
 // Verify Refresh Token Middleware
 let verifySession = (req, res, next) => {
@@ -195,9 +211,11 @@ app.delete('/lists/:listId/tasks/:taskId', (req, res) => {
  * GET /boards
  * purpose: get all boards
  */
-app.get('/boards', (req, res) => {
-    //return an array of all the boards in the database
-    Board.find({}).then((boards) => {
+app.get('/boards', authenticate, (req, res) => {
+    //return an array of all the boards in the database that belongs to the authenticated user.
+    Board.find({
+        _userId: req.user_id
+    }).then((boards) => {
         res.send(boards);
     }).catch((e) => {
         res.send(e);
@@ -208,11 +226,12 @@ app.get('/boards', (req, res) => {
  * POST /boards
  * Purpose: create a board
  */
-app.post('/boards', (req, res) => {
+app.post('/boards', authenticate, (req, res) => {
     let title = req.body.title;
 
     let newBoard = new Board({
-        title
+        title,
+        _userId: req.user_id
     });
     newBoard.save().then((boardDoc) => {
         // the full board doc is returned (including id)
@@ -224,7 +243,7 @@ app.post('/boards', (req, res) => {
  * GET /boards/:id
  * purpose: get a board with specified id
  */
-app.get('/boards/:id', (req, res) => {
+app.get('/boards/:id', authenticate, (req, res) => {
     //return an array of all the boards in the database
     Board.findOne({
         _id: req.params.id
@@ -239,9 +258,12 @@ app.get('/boards/:id', (req, res) => {
  * PATCH /boards/:id
  * purpose: update a specified board
  */
-app.patch('/boards/:id', (req, res) => {
+app.patch('/boards/:id', authenticate, (req, res) => {
     //update the specified board (board document with id in the URL) with the new values specified in the JSON body of the request 
-    Board.findOneAndUpdate({ _id: req.params.id }, {
+    Board.findOneAndUpdate({ 
+        _id: req.params.id,
+        _userId: req.user_id
+    }, {
         $set: req.body
     }).then(() => {
         res.sendStatus(200);
@@ -252,9 +274,10 @@ app.patch('/boards/:id', (req, res) => {
  * DELETE /boards/:id
  * purpose: delete a board
  */
-app.delete('/boards/:id', (req,res) => {
+app.delete('/boards/:id', authenticate, (req,res) => {
     //delete the specified board (document with id in the URL)
     Board.findOneAndDelete({
+        _userId: req.user_id,
         _id: req.params.id
     }).then((removedBoardDoc) => {
         res.send(removedBoardDoc);
@@ -265,7 +288,7 @@ app.delete('/boards/:id', (req,res) => {
  * GET /boards/:boardId/columns
  * Purpose: Get all columns in a specific board
  */
-app.get('/boards/:boardId/columns', (req, res) => {
+app.get('/boards/:boardId/columns', authenticate, (req, res) => {
     // We want to return all columns that belong to a specific board (specified by board ID)
     Column.find({
         _boardId: req.params.boardId
@@ -308,17 +331,31 @@ app.patch('/boards/:boardId/columns/:columnId', (req, res) => {
 
 /**
  * POST /boards/:boardId/columns
- * Purpose: Create a new taskcard in a specific board
+ * Purpose: Create a new column in a specific board
  */
-app.post('/boards/:boardId/columns', (req, res) => {
+app.post('/boards/:boardId/columns', authenticate, (req, res) => {
     //We want to create a new columns in a board specified by boardId
-    let newColumn = new Column({
-        title: req.body.title,
-        _boardId: req.params.boardId,
-        position: req.body.position,
-    });
-    newColumn.save().then((newColumnDoc) => {
-        res.send(newColumnDoc);
+    Board.findOne({
+        _id: req.params.boardId,
+        _userId: req.user_id
+    }).then((board) => {
+        if (board) {
+            return true;
+        }
+        return false;
+    }).then((canCreateTask) => {
+        if(canCreateTask) {
+            let newColumn = new Column({
+                title: req.body.title,
+                _boardId: req.params.boardId,
+                position: req.body.position,
+            });
+            newColumn.save().then((newColumnDoc) => {
+                res.send(newColumnDoc);
+            })
+        } else {
+            res.sendStatus(404);
+        }
     })
 })
 
@@ -471,6 +508,9 @@ app.get(`/users/me/access-token`, verifySession, (req, res) => {
     });
 
 })
+
+/* HELPER METHODS */
+
 
 app.listen(3000, () => {
     console.log("Server is listening on port 3000");
