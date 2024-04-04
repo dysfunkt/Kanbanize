@@ -69,7 +69,7 @@
             class="tasks-container"
             cdkDropList
             #todoList="cdkDropList"
-            [cdkDropListData]="column.taskcards"
+            [cdkDropListData]="column"
             (cdkDropListDropped)="drop($event)"
           >
             <div class="task" *ngFor="let taskcard of column.taskcards" cdkDrag>

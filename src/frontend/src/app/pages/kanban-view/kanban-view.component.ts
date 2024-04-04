@@ -90,18 +90,36 @@ export class KanbanViewComponent implements OnInit{
     this.updateBoardTitle(titleInput.value);
   }
   
-  drop(event: CdkDragDrop<TaskCard[]>) {
+  drop(event: CdkDragDrop<Column>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data.taskcards, event.previousIndex, event.currentIndex);
+      let index = 0
+      for (var task of event.container.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, task._columnId, index).subscribe(() => {});
+        index++;
+      }
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
+        event.previousContainer.data.taskcards,
+        event.container.data.taskcards,
         event.previousIndex,
         event.currentIndex,
       );
+      let index = 0
+      for (var task of event.container.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, event.container.data._id, index).subscribe(() => {});
+        task._columnId = event.container.data._id
+        index++;
+      }
+      index = 0
+      for (var task of event.previousContainer.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, task._columnId, index).subscribe(() => {});
+        index++;
+      }
     }
-    this.updateAllTaskCards();
   }
 
   updateBoardTitle(title: string) {
@@ -150,15 +168,18 @@ export class KanbanViewComponent implements OnInit{
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const dropdown: HTMLDivElement = document.getElementById("dropdown") as HTMLDivElement;
-    if ((event.target == document.getElementById("dropdown-button") || event.target == document.getElementById("dropdown-icon"))) {
-      if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active')
-      } else
-      dropdown.classList.add('is-active');
-    } else {
-      if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active')
+    if (dropdown) {
+      if ((event.target == document.getElementById("dropdown-button") || event.target == document.getElementById("dropdown-icon"))) {
+        if (dropdown.classList.contains('is-active')) {
+          dropdown.classList.remove('is-active')
+        } else
+        dropdown.classList.add('is-active');
+      } else {
+        if (dropdown.classList.contains('is-active')) {
+          dropdown.classList.remove('is-active')
+        }
       }
     }
+    
   }
 }

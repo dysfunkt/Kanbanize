@@ -28,6 +28,12 @@ export class DeleteBoardComponent implements OnInit{
   }
 
   deleteBoard() {
+    for(var column of this.board.columns) {
+      for(var task of column.taskcards) {
+        this.taskService.deleteTaskCard(task._columnId, task._id).subscribe(() => {});
+      }
+      this.taskService.deleteColumn(column._boardId, column._id).subscribe(() => {});
+    }
     this.taskService.deleteBoard(this.board._id).subscribe(() => {});
     this.router.navigate(['project-list']);
   }

@@ -323,8 +323,8 @@ app.post('/boards/:boardId/columns', (req, res) => {
 })
 
 /**
- * DELETE /boards/:boardId/taskcard/:taskcardId
- * Purpose: Delete a taskcard
+ * DELETE /boards/:boardId/columns/:columnId
+ * Purpose: Delete a column
  */
 app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
     Column.findOneAndDelete({
