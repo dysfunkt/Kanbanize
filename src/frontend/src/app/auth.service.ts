@@ -95,4 +95,8 @@ export class AuthService {
   checkEmail(email: string) {
     return this.webService.checkEmail(email);
   }
+
+  getUsername() {
+    return this.webService.getUsername(this.getUserId());
+  }
 }

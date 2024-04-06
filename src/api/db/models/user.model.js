@@ -49,6 +49,14 @@ UserSchema.methods.toJSON = function() {
     return _.omit(userObject, ['password', 'sessions']);
 }
 
+UserSchema.methods.getUsername = function() {
+    const user = this;
+    
+
+    //return the doc except the password and sessions
+    return user.username;
+}
+
 UserSchema.methods.generateAccessAuthToken = function() {
     const user = this;
     return new Promise((resolve, reject) => {

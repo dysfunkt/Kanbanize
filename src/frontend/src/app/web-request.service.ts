@@ -58,4 +58,10 @@ export class WebRequestService {
       email
     })
   }
+
+  getUsername(userId: string) {
+    return this.http.post(`${this.ROOT_URL}/users/getuser`, {
+      userId
+    })
+  }
 }

@@ -5,6 +5,14 @@
                 <h1 class="app-name has-gradient-text">Kanbanize</h1>
             </div>
         </div>
+        <div class="navbar-end">
+            <div class="navbar-item has-dropdown" id="navbarDropdown">
+              <a class="navbar-link has-text-primary" id="navbarButton">{{ username }}</a>
+              <div class="navbar-dropdown is-right is-boxed">
+                <a class="navbar-item has-text-danger" (click)="logout()">Log Out</a>
+              </div>
+            </div>
+          </div>
     </div>
     <div class="centered-content">
         <div class="project-manager-container">
