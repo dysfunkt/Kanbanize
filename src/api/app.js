@@ -266,7 +266,7 @@ app.patch('/boards/:id', authenticate, (req, res) => {
     }, {
         $set: req.body
     }).then(() => {
-        res.sendStatus(200);
+        res.send({message: 'Updated Successfully.'});
     });
 });
 
@@ -302,7 +302,7 @@ app.get('/boards/:boardId/columns', authenticate, (req, res) => {
 /**
  * GET /boards/:boardId/columns/:columnId
  */
-app.get('/boards/:boardId/columns/:columnId', (req, res) => {
+app.get('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     // get an existing column (specified by columnId)
     Column.findOne({
         _id: req.params.columnId,
@@ -317,7 +317,7 @@ app.get('/boards/:boardId/columns/:columnId', (req, res) => {
 /**
  * PATCH /boards/:boardId/columns/:columnId
  */
-app.patch('/boards/:boardId/columns/:columnId', (req, res) => {
+app.patch('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     // Update an existing column (specified by columnId)
     Column.findOneAndUpdate({
         _id: req.params.columnId,
@@ -363,7 +363,7 @@ app.post('/boards/:boardId/columns', authenticate, (req, res) => {
  * DELETE /boards/:boardId/columns/:columnId
  * Purpose: Delete a column
  */
-app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
+app.delete('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     Column.findOneAndDelete({
         _id: req.params.columnId,
         _boardId: req.params.boardId
@@ -376,8 +376,8 @@ app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
  * GET /columns/:columnId/taskcards
  * Purpose: Get all taskcards in a specific column
  */
-app.get('/columns/:columnId/taskcards', (req, res) => {
-    // We want to return all columns that belong to a specific column (specified by column ID)
+app.get('/columns/:columnId/taskcards', authenticate, (req, res) => {
+    // We want to return all taskcards that belong to a specific column (specified by column ID)
     TaskCard.find({
         _columnId: req.params.columnId
     }).then((taskcards) => {
@@ -389,8 +389,8 @@ app.get('/columns/:columnId/taskcards', (req, res) => {
  * GET /columns/:columnId/taskcards/:taskcardId
  * Purpose: Get a taskcards with the specified columnId and id
  */
-app.get('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
-    // We want to return all columns that belong to a specific column (specified by column ID)
+app.get('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
+    // We want to return all taskcards that belong to a specific column (specified by column ID)
     TaskCard.findOne({
         _id: req.params.taskcardId,
         _columnId: req.params.columnId
@@ -403,7 +403,7 @@ app.get('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
 /**
  * PATCH /columns/:columnId/taskcard/:taskcardId
  */
-app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+app.patch('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
     // Update an existing taskcard (specified by taskcardId)
     TaskCard.findOneAndUpdate({
         _id: req.params.taskcardId,
@@ -419,7 +419,7 @@ app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
  * POST /columns/:columnId/taskcards
  * Purpose: Create a new taskcard in a specific column
  */
-app.post('/columns/:columnId/taskcards', (req, res) => {
+app.post('/columns/:columnId/taskcards', authenticate, (req, res) => {
     //We want to create a new taskcard in a column specified by columnId
     let newTaskCard = new TaskCard({
         title: req.body.title,
@@ -436,7 +436,7 @@ app.post('/columns/:columnId/taskcards', (req, res) => {
  * DELETE /columns/:columnId/taskcard/:taskcardId
  * Purpose: Delete a taskcard
  */
-app.delete('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+app.delete('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
     TaskCard.findOneAndDelete({
         _id: req.params.taskcardId,
         _columnId: req.params.columnId
