@@ -16,8 +16,18 @@ export class AuthService {
       shareReplay(),
       tap((res: HttpResponse<any>) => {
         //auth tokens will be in the header of this response
-        this.setSession(res.body._id, res.headers.get('x-access-token') ?? '', res.headers.get('x-refresh-token') ?? '')
+        this.setSession(res.body._id, res.headers.get('x-access-token') as string, res.headers.get('x-refresh-token') as string)
         console.log("LOGGED IN");
+      })
+    )
+  }
+
+  signup(username: string, email: string, password: string) {
+    return this.webService.signup(username, email, password).pipe(
+      shareReplay(),
+      tap((res: HttpResponse<any>) => {
+        this.setSession(res.body._id, res.headers.get('x-access-token') as string, res.headers.get('x-refresh-token') as string)
+        console.log("succcessfully signed up and logged in");
       })
     )
   }
@@ -29,15 +39,21 @@ export class AuthService {
   }
 
   getAccessToken() {
-    return localStorage.getItem('x-access-token');
+    let accessToken = localStorage.getItem('x-access-token');
+    if (!accessToken !== null) return accessToken as string;
+    else return '';
   }
 
   getRefreshToken() {
-    return localStorage.getItem('x-refresh-token');
+    let refreshToken = localStorage.getItem('x-refresh-token');
+    if (!refreshToken !== null) return refreshToken as string;
+    else return '';
   }
 
   getUserId() {
-    return localStorage.getItem('user-id');
+    let userId = localStorage.getItem('user-id');
+    if (!userId !== null) return userId as string;
+    else return '';
   }
 
   setAccessToken(accessToken: string) {
@@ -57,21 +73,26 @@ export class AuthService {
   }
 
   getNewAccessToken() {
-    const refreshToken = this.getRefreshToken();
-    const id = this.getUserId()
-    const headers = {
-      'x-refresh-token': refreshToken ? refreshToken : '',
-      '_id': id ? id : ''
-    };
+    
 
     return this.http.get(`${this.webService.ROOT_URL}/users/me/access-token`, { 
-      headers,
+      headers: {
+        'x-refresh-token': this.getRefreshToken(),
+        '_id': this.getUserId()
+      },
       observe: 'response'
     }).pipe(
       tap((res: HttpResponse<any>) => {
-        const accessToken = this.getAccessToken();
-        this.setAccessToken(accessToken ? accessToken : '');
+        this.setAccessToken(res.headers.get('x-access-token') ?? '');
       })
     )
+  }
+
+  checkUser(username: string) {
+    return this.webService.checkUser(username);
+  }
+
+  checkEmail(email: string) {
+    return this.webService.checkEmail(email);
   }
 }

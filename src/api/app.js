@@ -472,6 +472,30 @@ app.post('/users', (req, res) => {
     })
 })
 
+app.post('/users/username', (req, res) => {
+    User.findOne({
+        username: req.body.username
+    }).then((user) => {
+        if (user) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    });
+})
+
+app.post('/users/email', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }).then((user) => {
+        if (user) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    });
+})
+
 /**
  * POST /users/login
  * Purpose: Login
