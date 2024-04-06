@@ -1,13 +1,15 @@
 const express = require('express');
 const app = express();
+const jwt = require('jsonwebtoken');
 
 const { mongoose } = require('./db/mongoose');
 
 const bodyParser = require('body-parser');
 
 // Load in mongoose models
-const { List, Task, Board, TaskCard } = require('./db/models');
-const { Column } = require('./db/models/column.model');
+const { Board, Column, TaskCard, User } = require('./db/models');
+
+/* MIDDLEWARE */
 
 // Load middleware
 app.use(bodyParser.json());
@@ -16,136 +18,67 @@ app.use(bodyParser.json());
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Methods", "GET, POST, HEAD, OPTIONS, PUT, PATCH, DELETE");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-access-token, x-refresh-token, _id");
+    res.header('Access-Control-Expose-Headers', 'x-access-token, x-refresh-token');
     next();
 });
 
-/* ROUTE HANDLERS */
+//check whether the request has a valid jwt access token
+let authenticate = (req, res, next) => {
+    let token = req.header('x-access-token');
 
-/* LIST ROUTES */
+    jwt.verify(token, User.getJWTSecret(), (err, decoded) => {
+        if(err) {
+            //jwt is invalid, DO NOT AUTHENTHICATE
+            res.status(401).send(err);
+        } else {
+            req.user_id = decoded._id;
+            next()
+        }
+    });
+}
 
-/**
- * GET /lists
- * purpose: get all lists
- */
-app.get('/lists', (req, res) => {
-    //return an array of all the lists in the database
-    List.find({}).then((lists) => {
-        res.send(lists);
+// Verify Refresh Token Middleware
+let verifySession = (req, res, next) => {
+    let refreshToken = req.header('x-refresh-token');
+    let _id = req.header('_id');
+
+    User.findByIdAndToken(_id, refreshToken).then((user) => {
+        if (!user) {
+            return Promise.reject({
+                'error': 'User not found. Make sure than the refresh token and user id are correct'
+            });
+        }
+
+        req.user_id = user._id;
+        req.userObject = user;
+        req.refreshToken = refreshToken;
+
+        let isSessionValid = false;
+
+        user.sessions.forEach((session) => {
+            if (session.token === refreshToken) {
+                if (User.hasRefreshTokenExpired(session.expiresAt) === false) {
+                    isSessionValid = true;
+                }
+            }
+        });
+
+        if (isSessionValid) {
+            next();
+        } else { 
+            return Promise.reject({
+                'error': 'Refresh token has expired or the session is invalid'
+            })
+        }
     }).catch((e) => {
-        res.send(e);
-    })
-})
-
-/**
- * POST /lists
- * Purpose: create a list
- */
-app.post('/lists', (req, res) => {
-    //create new list and return new list document back to  the user ( includes  the id)
-    //the list info (fields) will be passed in via the JSON request body
-    let title = req.body.title;
-
-    let newList = new List({
-        title
+        res.status(401).send(e);
     });
-    newList.save().then((listDoc) => {
-        // the full list doc is returned (including id)
-        res.send(listDoc);
-    });
-});
+}
 
-/**
- * PATCH /lists/:id
- * purpose: update a specified list
- */
-app.patch('/lists/:id', (req, res) => {
-    //update the specified list (list document with id in the URL) with the new values specified in the JSON body of the request 
-    List.findOneAndUpdate({ _id: req.params.id }, {
-        $set: req.body
-    }).then(() => {
-        res.sendStatus(200);
-    });
-});
+/* END MIDDLEWARE */
 
-/**
- * DELETE /lists/:id
- * purpose: delete a list
- */
-app.delete('/lists/:id', (req,res) => {
-    //delete the specified list (document with id in the URL)
-    List.findOneAndDelete({
-        _id: req.params.id
-    }).then((removedListDoc) => {
-        res.send(removedListDoc);
-    })
-});
-
-/**
- * GET /lists/:listID/tasks
- * Purpose: Get all tasks in a specific list
- */
-app.get('/lists/:listId/tasks', (req, res) => {
-    // We want to return all tasks that belong to a specific list (specified by list ID)
-    Task.find({
-        _listId: req.params.listId
-    }).then((tasks) => {
-        res.send(tasks);
-    })
-});
-
-app.get('/lists/:listId/tasks/:taskId', (req, res) => {
-    Task.findOne({
-        _id: req.params.taskId,
-        _listId: req.params.listId
-    }).then((task) => {
-        res.send(task);
-    })
-});
-
-/**
- * POST /lists/:listId/tasks
- * Purpose: Create a new task in a specific list
- */
-app.post('/lists/:listId/tasks', (req, res) => {
-    //We want to create a new task in a list specified by listId
-    let newTask = new Task({
-        title: req.body.title,
-        _listId: req.params.listId
-    });
-    newTask.save().then((newTaskDoc) => {
-        res.send(newTaskDoc);
-    })
-})
-
-/**
- * PATCH /lists/:listId/tasks/:taskId
- */
-app.patch('/lists/:listId/tasks/:taskId', (req, res) => {
-    // Update an existing task (specified by taskId)
-    Task.findOneAndUpdate({
-        _id: req.params.taskId,
-        _listId: req.params.listId
-    }, {
-        $set: req.body
-    }).then(() => {
-        res.send({message: 'Updated Successfully.'});
-    })
-});
-
-/**
- * DELETE /lists/:listId/tasks/:taskId
- * Purpose: Delete a task
- */
-app.delete('/lists/:listId/tasks/:taskId', (req, res) => {
-    Task.findOneAndDelete({
-        _id: req.params.taskId,
-        _listId: req.params.listId
-    }).then ((removedTaskDoc) => {
-        res.send(removedTaskDoc);
-    })
-});
-
+/* ROUTE HANDLERS */
 
 /* KANBAN ROUTES */
 
@@ -153,9 +86,11 @@ app.delete('/lists/:listId/tasks/:taskId', (req, res) => {
  * GET /boards
  * purpose: get all boards
  */
-app.get('/boards', (req, res) => {
-    //return an array of all the boards in the database
-    Board.find({}).then((boards) => {
+app.get('/boards', authenticate, (req, res) => {
+    //return an array of all the boards in the database that belongs to the authenticated user.
+    Board.find({
+        _userId: req.user_id
+    }).then((boards) => {
         res.send(boards);
     }).catch((e) => {
         res.send(e);
@@ -166,11 +101,12 @@ app.get('/boards', (req, res) => {
  * POST /boards
  * Purpose: create a board
  */
-app.post('/boards', (req, res) => {
+app.post('/boards', authenticate, (req, res) => {
     let title = req.body.title;
 
     let newBoard = new Board({
-        title
+        title,
+        _userId: req.user_id
     });
     newBoard.save().then((boardDoc) => {
         // the full board doc is returned (including id)
@@ -182,7 +118,7 @@ app.post('/boards', (req, res) => {
  * GET /boards/:id
  * purpose: get a board with specified id
  */
-app.get('/boards/:id', (req, res) => {
+app.get('/boards/:id', authenticate, (req, res) => {
     //return an array of all the boards in the database
     Board.findOne({
         _id: req.params.id
@@ -197,12 +133,15 @@ app.get('/boards/:id', (req, res) => {
  * PATCH /boards/:id
  * purpose: update a specified board
  */
-app.patch('/boards/:id', (req, res) => {
+app.patch('/boards/:id', authenticate, (req, res) => {
     //update the specified board (board document with id in the URL) with the new values specified in the JSON body of the request 
-    Board.findOneAndUpdate({ _id: req.params.id }, {
+    Board.findOneAndUpdate({ 
+        _id: req.params.id,
+        _userId: req.user_id
+    }, {
         $set: req.body
     }).then(() => {
-        res.sendStatus(200);
+        res.send({message: 'Updated Successfully.'});
     });
 });
 
@@ -210,9 +149,10 @@ app.patch('/boards/:id', (req, res) => {
  * DELETE /boards/:id
  * purpose: delete a board
  */
-app.delete('/boards/:id', (req,res) => {
+app.delete('/boards/:id', authenticate, (req,res) => {
     //delete the specified board (document with id in the URL)
     Board.findOneAndDelete({
+        _userId: req.user_id,
         _id: req.params.id
     }).then((removedBoardDoc) => {
         res.send(removedBoardDoc);
@@ -223,7 +163,7 @@ app.delete('/boards/:id', (req,res) => {
  * GET /boards/:boardId/columns
  * Purpose: Get all columns in a specific board
  */
-app.get('/boards/:boardId/columns', (req, res) => {
+app.get('/boards/:boardId/columns', authenticate, (req, res) => {
     // We want to return all columns that belong to a specific board (specified by board ID)
     Column.find({
         _boardId: req.params.boardId
@@ -237,7 +177,7 @@ app.get('/boards/:boardId/columns', (req, res) => {
 /**
  * GET /boards/:boardId/columns/:columnId
  */
-app.get('/boards/:boardId/columns/:columnId', (req, res) => {
+app.get('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     // get an existing column (specified by columnId)
     Column.findOne({
         _id: req.params.columnId,
@@ -252,7 +192,7 @@ app.get('/boards/:boardId/columns/:columnId', (req, res) => {
 /**
  * PATCH /boards/:boardId/columns/:columnId
  */
-app.patch('/boards/:boardId/columns/:columnId', (req, res) => {
+app.patch('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     // Update an existing column (specified by columnId)
     Column.findOneAndUpdate({
         _id: req.params.columnId,
@@ -266,25 +206,39 @@ app.patch('/boards/:boardId/columns/:columnId', (req, res) => {
 
 /**
  * POST /boards/:boardId/columns
- * Purpose: Create a new taskcard in a specific board
+ * Purpose: Create a new column in a specific board
  */
-app.post('/boards/:boardId/columns', (req, res) => {
+app.post('/boards/:boardId/columns', authenticate, (req, res) => {
     //We want to create a new columns in a board specified by boardId
-    let newColumn = new Column({
-        title: req.body.title,
-        _boardId: req.params.boardId,
-        position: req.body.position,
-    });
-    newColumn.save().then((newColumnDoc) => {
-        res.send(newColumnDoc);
+    Board.findOne({
+        _id: req.params.boardId,
+        _userId: req.user_id
+    }).then((board) => {
+        if (board) {
+            return true;
+        }
+        return false;
+    }).then((canCreateTask) => {
+        if(canCreateTask) {
+            let newColumn = new Column({
+                title: req.body.title,
+                _boardId: req.params.boardId,
+                position: req.body.position,
+            });
+            newColumn.save().then((newColumnDoc) => {
+                res.send(newColumnDoc);
+            })
+        } else {
+            res.sendStatus(404);
+        }
     })
 })
 
 /**
- * DELETE /boards/:boardId/taskcard/:taskcardId
- * Purpose: Delete a taskcard
+ * DELETE /boards/:boardId/columns/:columnId
+ * Purpose: Delete a column
  */
-app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
+app.delete('/boards/:boardId/columns/:columnId', authenticate, (req, res) => {
     Column.findOneAndDelete({
         _id: req.params.columnId,
         _boardId: req.params.boardId
@@ -297,8 +251,8 @@ app.delete('/boards/:boardId/columns/:columnId', (req, res) => {
  * GET /columns/:columnId/taskcards
  * Purpose: Get all taskcards in a specific column
  */
-app.get('/columns/:columnId/taskcards', (req, res) => {
-    // We want to return all columns that belong to a specific column (specified by column ID)
+app.get('/columns/:columnId/taskcards', authenticate, (req, res) => {
+    // We want to return all taskcards that belong to a specific column (specified by column ID)
     TaskCard.find({
         _columnId: req.params.columnId
     }).then((taskcards) => {
@@ -310,8 +264,8 @@ app.get('/columns/:columnId/taskcards', (req, res) => {
  * GET /columns/:columnId/taskcards/:taskcardId
  * Purpose: Get a taskcards with the specified columnId and id
  */
-app.get('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
-    // We want to return all columns that belong to a specific column (specified by column ID)
+app.get('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
+    // We want to return all taskcards that belong to a specific column (specified by column ID)
     TaskCard.findOne({
         _id: req.params.taskcardId,
         _columnId: req.params.columnId
@@ -324,7 +278,7 @@ app.get('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
 /**
  * PATCH /columns/:columnId/taskcard/:taskcardId
  */
-app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+app.patch('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
     // Update an existing taskcard (specified by taskcardId)
     TaskCard.findOneAndUpdate({
         _id: req.params.taskcardId,
@@ -340,7 +294,7 @@ app.patch('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
  * POST /columns/:columnId/taskcards
  * Purpose: Create a new taskcard in a specific column
  */
-app.post('/columns/:columnId/taskcards', (req, res) => {
+app.post('/columns/:columnId/taskcards', authenticate, (req, res) => {
     //We want to create a new taskcard in a column specified by columnId
     let newTaskCard = new TaskCard({
         title: req.body.title,
@@ -357,7 +311,7 @@ app.post('/columns/:columnId/taskcards', (req, res) => {
  * DELETE /columns/:columnId/taskcard/:taskcardId
  * Purpose: Delete a taskcard
  */
-app.delete('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
+app.delete('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) => {
     TaskCard.findOneAndDelete({
         _id: req.params.taskcardId,
         _columnId: req.params.columnId
@@ -365,6 +319,112 @@ app.delete('/columns/:columnId/taskcards/:taskcardId', (req, res) => {
         res.send(removedTaskCardDoc);
     })
 });
+
+
+/* USER ROUTES */
+
+/**
+ * POST /users
+ * Purpose: Sign up
+ */
+app.post('/users', (req, res) => {
+    let body = req.body;
+    let newUser = new User(body);
+
+    newUser.save().then(() => {
+        return newUser.createSession();
+    }).then((refreshToken) => {
+        return newUser.generateAccessAuthToken().then((accessToken) => {
+            return {accessToken, refreshToken}
+        });
+    }).then((authTokens) => {
+        res
+            .header('x-refresh-token', authTokens.refreshToken)
+            .header('x-access-token', authTokens.accessToken)
+            .send(newUser);
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+})
+
+app.post('/users/username', (req, res) => {
+    User.findOne({
+        username: req.body.username
+    }).then((user) => {
+        if (user) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    });
+})
+
+app.post('/users/email', (req, res) => {
+    User.findOne({
+        email: req.body.email
+    }).then((user) => {
+        if (user) {
+            res.send(true);
+        } else {
+            res.send(false);
+        }
+    });
+})
+
+app.post(`/users/getuser`, (req, res) => {
+    
+    User.findOne({
+        _id: req.body.userId
+    }).then((user) => {
+        if (user) {
+            res.send(user.toJSON());
+        } else {
+            res.send('');
+        }
+    })
+})
+
+/**
+ * POST /users/login
+ * Purpose: Login
+ */
+app.post('/users/login', (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+
+    User.findByCredentials(username, password). then ((user) => {
+        return user.createSession().then((refreshToken) => {
+            return user.generateAccessAuthToken().then ((accessToken) => {
+                return {accessToken, refreshToken}
+            });
+        }).then((authTokens) => {
+            res
+            .header('x-refresh-token', authTokens.refreshToken)
+            .header('x-access-token', authTokens.accessToken)
+            .send(user);
+        })
+    }).catch((e) => {
+        res.status(400).send(e);
+    })
+})
+
+/**
+ * GET /users/me/access-token
+ * Purpose: generates and returns an access token
+ */
+app.get(`/users/me/access-token`, verifySession, (req, res) => {
+    req.userObject.generateAccessAuthToken().then((accessToken) => {
+        res.header('x-access-token', accessToken).send({ accessToken });
+    }).catch((e) => {
+        res.status(400).send(e);
+    });
+
+})
+
+
+
+/* HELPER METHODS */
+
 
 app.listen(3000, () => {
     console.log("Server is listening on port 3000");

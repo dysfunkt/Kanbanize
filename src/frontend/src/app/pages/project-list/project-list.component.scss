@@ -1,11 +1,5 @@
 @import "../../../main-styles.scss";
 
-.has-gradient-text {
-  background: -webkit-linear-gradient($pink, $dark-purple);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
 .project-manager-container {
   display: flex;
   width: 100%;
@@ -63,5 +57,11 @@
     }
   
   }
+}
+
+.empty-state {
+  font-size: 20px;
+  color: #777;
+  text-align: center;
 }
 

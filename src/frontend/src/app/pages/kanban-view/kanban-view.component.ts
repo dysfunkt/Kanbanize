@@ -12,6 +12,8 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Column } from '../../models/column.model';
 import { TaskCard } from '../../models/taskcard.model';
 import { formatDate } from '@angular/common';
+import { AuthService } from '../../auth.service';
+import { User } from '../../models/user.model';
 
 
 
@@ -23,9 +25,10 @@ import { formatDate } from '@angular/common';
 export class KanbanViewComponent implements OnInit{
 
   board!: Board;
+  username!: string;
   isActive: Boolean = false;
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {}
 
   ngOnInit() { 
     this.route.params.subscribe(
@@ -37,6 +40,9 @@ export class KanbanViewComponent implements OnInit{
           })
         }
     });
+    this.authService.getUsername().subscribe(next => {
+      this.username = (next as User).username
+    })
   }
   columnInit(boardId:string) {
     this.taskService.getColumns(boardId).subscribe(next => {
@@ -90,18 +96,36 @@ export class KanbanViewComponent implements OnInit{
     this.updateBoardTitle(titleInput.value);
   }
   
-  drop(event: CdkDragDrop<TaskCard[]>) {
+  drop(event: CdkDragDrop<Column>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data.taskcards, event.previousIndex, event.currentIndex);
+      let index = 0
+      for (var task of event.container.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, task._columnId, index).subscribe(() => {});
+        index++;
+      }
     } else {
       transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
+        event.previousContainer.data.taskcards,
+        event.container.data.taskcards,
         event.previousIndex,
         event.currentIndex,
       );
+      let index = 0
+      for (var task of event.container.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, event.container.data._id, index).subscribe(() => {});
+        task._columnId = event.container.data._id
+        index++;
+      }
+      index = 0
+      for (var task of event.previousContainer.data.taskcards) {
+        task.position = index;
+        this.taskService.updateTaskCardPosition(task._columnId, task._id, task._columnId, index).subscribe(() => {});
+        index++;
+      }
     }
-    this.updateAllTaskCards();
   }
 
   updateBoardTitle(title: string) {
@@ -150,15 +174,32 @@ export class KanbanViewComponent implements OnInit{
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const dropdown: HTMLDivElement = document.getElementById("dropdown") as HTMLDivElement;
-    if ((event.target == document.getElementById("dropdown-button") || event.target == document.getElementById("dropdown-icon"))) {
-      if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active')
-      } else
-      dropdown.classList.add('is-active');
-    } else {
-      if (dropdown.classList.contains('is-active')) {
-        dropdown.classList.remove('is-active')
+    const navDropdown: HTMLDivElement = document.getElementById("navbarDropdown") as HTMLDivElement;
+    if (dropdown && navDropdown) {
+      if ((event.target == document.getElementById("board-options") || event.target == document.getElementById("board-options-icon"))) {
+        if (dropdown.classList.contains('is-active')) {
+          dropdown.classList.remove('is-active')
+        } else
+        dropdown.classList.add('is-active');
+      } else if(event.target == document.getElementById("navbarButton")) {
+        if (navDropdown.classList.contains('is-active')){
+          navDropdown.classList.remove('is-active')
+        } else {
+          navDropdown.classList.add('is-active')
+        }
+      } else {
+        if (dropdown.classList.contains('is-active')) {
+          dropdown.classList.remove('is-active')
+        }
+        if (navDropdown.classList.contains('is-active')) {
+          navDropdown.classList.remove('is-active')
+        }
       }
     }
+    
+  }
+
+  logout() {
+    this.authService.logout()
   }
 }

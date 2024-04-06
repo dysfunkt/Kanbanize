@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router} from '@angular/router';
-import { Task } from '../../models/task.model';
 import { Column } from '../../models/column.model';
 import { TaskCard } from '../../models/taskcard.model';
 

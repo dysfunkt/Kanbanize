@@ -5,6 +5,14 @@
                 <h1 class="app-name has-gradient-text">Kanbanize</h1>
             </div>
         </div>
+        <div class="navbar-end">
+            <div class="navbar-item has-dropdown" id="navbarDropdown">
+              <a class="navbar-link has-text-primary" id="navbarButton">{{ username }}</a>
+              <div class="navbar-dropdown is-right is-boxed">
+                <a class="navbar-item has-text-danger" (click)="logout()">Log Out</a>
+              </div>
+            </div>
+          </div>
     </div>
     <div class="centered-content">
         <div class="project-manager-container">
@@ -15,10 +23,12 @@
     
                 <!-- Project Elements -->
                 <div class="project-menu">
-                    <a class="project-menu-item" *ngFor="let project of boards" [routerLink]="['/kanban-view', project._id]">
-                        <p>{{project.title}}</p>
-                    </a>
-    
+                    <div class="menu-container" *ngIf="boards">
+                        <a class="project-menu-item" *ngFor="let project of boards" [routerLink]="['/kanban-view', project._id]">
+                            <p>{{project.title}}</p>
+                        </a>
+                        <h3 class="empty-state" *ngIf="boards.length === 0">You have no projects! Create a new project to get started.</h3>
+                    </div>
                 </div>
     
                 <button class="button is-primary has-text-white" routerLink="/new-project">+ New Project</button>
