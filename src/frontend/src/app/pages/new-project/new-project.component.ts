@@ -30,6 +30,7 @@ export class NewProjectComponent implements OnInit{
       this.router.navigate(['/project-list'])
     });
   }
+  
   initColumns(boardId: string) {
     this.taskService.createColumn(boardId, "To Do", 0).subscribe(() => {});
     this.taskService.createColumn(boardId, "In Progress", 1).subscribe(() => {});

@@ -18,6 +18,7 @@ import { DeleteBoardComponent } from './pages/delete-board/delete-board.componen
 import { WebReqInterceptor } from './web-req.interceptor';
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
+import { AddUserComponent } from './pages/add-user/add-user.component';
 
 @NgModule({
   declarations: [
@@ -31,7 +32,8 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
     DeleteBoardComponent,
     LoginComponent,
     ForgetPasswordComponent,
-    ResetPasswordComponent
+    ResetPasswordComponent,
+    AddUserComponent
 
   ],
   imports: [

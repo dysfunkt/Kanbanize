@@ -90,7 +90,7 @@ let verifySession = (req, res, next) => {
 app.get('/boards', authenticate, (req, res) => {
     //return an array of all the boards in the database that belongs to the authenticated user.
     Board.find({
-        _userId: req.user_id
+        'users._userId': req.user_id
     }).then((boards) => {
         res.send(boards);
     }).catch((e) => {
@@ -107,11 +107,13 @@ app.post('/boards', authenticate, (req, res) => {
 
     let newBoard = new Board({
         title,
-        _userId: req.user_id
     });
     newBoard.save().then((boardDoc) => {
         // the full board doc is returned (including id)
-        res.send(boardDoc);
+        boardDoc.addUser(req.user_id).then((board) => {
+            res.send(board);
+        })
+        
     });
 });
 
@@ -120,7 +122,7 @@ app.post('/boards', authenticate, (req, res) => {
  * purpose: get a board with specified id
  */
 app.get('/boards/:id', authenticate, (req, res) => {
-    //return an array of all the boards in the database
+    //return a board in the database
     Board.findOne({
         _id: req.params.id
     }).then((board) => {
@@ -138,7 +140,7 @@ app.patch('/boards/:id', authenticate, (req, res) => {
     //update the specified board (board document with id in the URL) with the new values specified in the JSON body of the request 
     Board.findOneAndUpdate({ 
         _id: req.params.id,
-        _userId: req.user_id
+        'users._userId': req.user_id
     }, {
         $set: req.body
     }).then(() => {
@@ -153,12 +155,30 @@ app.patch('/boards/:id', authenticate, (req, res) => {
 app.delete('/boards/:id', authenticate, (req,res) => {
     //delete the specified board (document with id in the URL)
     Board.findOneAndDelete({
-        _userId: req.user_id,
+        'users._userId': req.user_id,
         _id: req.params.id
     }).then((removedBoardDoc) => {
         res.send(removedBoardDoc);
     })
 });
+
+app.post ('/boards/:id/add-user', authenticate, (req, res) => {
+    User.findOne({
+        username: req.body.username
+    }).then((addUser) => {
+        Board.findOne({
+            _id: req.params.id,
+            'users._userId': req.user_id
+        }).then((boardDoc) => {
+            boardDoc.addUser(addUser._id).then(() => {
+                res.send(true);
+            })
+        })
+    }).catch((e) => {
+        res.send(e);
+    })
+    
+})
 
 /**
  * GET /boards/:boardId/columns
@@ -213,7 +233,7 @@ app.post('/boards/:boardId/columns', authenticate, (req, res) => {
     //We want to create a new columns in a board specified by boardId
     Board.findOne({
         _id: req.params.boardId,
-        _userId: req.user_id
+        'users._userId': req.user_id
     }).then((board) => {
         if (board) {
             return true;

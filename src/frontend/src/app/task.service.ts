@@ -86,4 +86,10 @@ export class TaskService {
   deleteBoard(boardId: string) {
     return this.webReqService.delete(`boards/${boardId}`)
   }
+
+  addUser(boardId:string, username: string) {
+    return this.webReqService.post(`boards/${boardId}/add-user`, {
+      username
+    })
+  }
 }

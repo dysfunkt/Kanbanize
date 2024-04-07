@@ -47,6 +47,8 @@ export class WebRequestService {
     });
   }
 
+  
+
   checkUser(username: string) {
     return this.http.post(`${this.ROOT_URL}/users/username`, {
       username
