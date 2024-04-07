@@ -8,6 +8,8 @@ import { EditTaskComponent } from './pages/edit-task/edit-task.component';
 import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
 import { DeleteBoardComponent } from './pages/delete-board/delete-board.component';
 import { LoginComponent } from './pages/login/login.component';
+import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 
 const routes: Routes = [
@@ -19,8 +21,10 @@ const routes: Routes = [
   { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
   { path: 'delete-board/:boardId', component: DeleteBoardComponent},
   { path: 'new-project', component: NewProjectComponent },
-  { path: 'login', component: LoginComponent},
-  { path: '', redirectTo: '/project-list', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'forget-password', component: ForgetPasswordComponent },
+  { path: 'reset-password/:token', component: ResetPasswordComponent },
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
 
 ];
 

@@ -15,13 +15,20 @@ export class LoginComponent {
   
 
   onLoginButtonClick(username: string, password: string) {
-    this.authService.login(username, password).subscribe((res: HttpResponse<any>) => {
-      
-      if (res.status === 200) {
-        this.router.navigate(['/project-list']);
+    this.authService.login(username, password).subscribe({
+      next: (res: HttpResponse<any>) => {
+        
+        if (res.status === 200) {
+          this.router.navigate(['/project-list']);
+        }
+
+        console.log(res);
+      },
+      error: () => {
+          const invalidLoginDialog : HTMLDialogElement = document.getElementById('invalidLoginError') as HTMLDialogElement;
+          invalidLoginDialog.show();
       }
-      console.log(res);
-    });
+    })
   }
 
   async onRegisterButtonClick(username: string, email: string, password1: string, password2: string) {
@@ -68,6 +75,8 @@ export class LoginComponent {
     const emailTakenDialog : HTMLDialogElement = document.getElementById('emailTakenError') as HTMLDialogElement;
     const passwordStrengthDialog : HTMLDialogElement = document.getElementById('passwordStrengthError') as HTMLDialogElement;
     const passwordMismatchDialog : HTMLDialogElement = document.getElementById('passwordMismatchError') as HTMLDialogElement;
+    const invalidLoginDialog : HTMLDialogElement = document.getElementById('invalidLoginError') as HTMLDialogElement;
+    
     
     emptyFieldDialog.close();
     userTakenDialog.close();
@@ -75,6 +84,7 @@ export class LoginComponent {
     emailTakenDialog.close();
     passwordStrengthDialog.close();
     passwordMismatchDialog.close();
+    invalidLoginDialog.close();
   }
 
   async checkUser(username: string) {

@@ -3,15 +3,18 @@ import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { TaskCard } from '../../models/taskcard.model';
 import { formatDate } from '@angular/common';
+import { AuthService } from '../../auth.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-edit-task',
   templateUrl: './edit-task.component.html',
   styleUrl: './edit-task.component.scss'
 })
-export class EditTaskComponent implements OnInit { 
+export class EditTaskComponent implements OnInit {
+  username!: string; 
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, ) {}
+  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {}
 
   boardId!: string;
   taskcard!: TaskCard;
@@ -26,6 +29,9 @@ export class EditTaskComponent implements OnInit {
         })
       }
     )
+    this.authService.getUsername().subscribe(next => {
+      this.username = (next as User).username
+    })
   }
 
   cancel() {
@@ -62,4 +68,7 @@ export class EditTaskComponent implements OnInit {
     return formatDate(date, 'yyyy-MM-dd', 'en-GB');
   }
   
+  logout() {
+    this.authService.logout()
+  }
 }

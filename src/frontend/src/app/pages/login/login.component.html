@@ -41,6 +41,14 @@
     <button class="button is-small dialog-button" (click)="close()">Ok</button>
   </div>
 </dialog>
+<dialog class="dialog-box" id="invalidLoginError">
+  <div class="dialog-content">
+    <h1><b>Error</b></h1>
+    <p>There was a problem with your login.</p>
+    <p>Please check your username and password and try again.</p>
+    <button class="button is-small dialog-button" (click)="close()">Ok</button>
+  </div>
+</dialog>
 <div class="root">
   <div class="navbar has-background-dark">
     <div class="navbar-brand">
@@ -78,7 +86,8 @@
           Login
         </button>
         <a href="#" class="forgot-password has-text-primary"
-          >Forgot Password? Click here</a
+        routerLink="/forget-password"  
+        >Forgot Password? Click here</a
         >
       </div>
       <div class="signup">

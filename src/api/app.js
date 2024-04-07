@@ -1,13 +1,14 @@
 const express = require('express');
 const app = express();
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
 
 const { mongoose } = require('./db/mongoose');
 
 const bodyParser = require('body-parser');
 
 // Load in mongoose models
-const { Board, Column, TaskCard, User } = require('./db/models');
+const { Board, Column, TaskCard, User, ResetToken } = require('./db/models');
 
 /* MIDDLEWARE */
 
@@ -421,7 +422,84 @@ app.get(`/users/me/access-token`, verifySession, (req, res) => {
 
 })
 
+/* RESET ROUTES */
 
+app.post('/send-email', (req, res) => {
+    const email = req.body.email
+    User.findOne({
+        email: {$regex: '^'+email+'$', $options: 'i'}
+    }).then((user) => {
+        if (!user) {
+            res.sendStatus(404)
+        }
+        const payload = {
+            email: user.email
+        }
+        const expiryTime = 300;
+        const token = jwt.sign(payload, User.getJWTSecret(), {expiresIn: expiryTime});
+
+        const newToken = new ResetToken({
+            userId: user._id,
+            token: token
+        });
+        
+        const mailTransporter = nodemailer.createTransport({
+            service:"gmail",
+            auth: {
+                user: "kanbanize8@gmail.com",
+                pass: "jtth tprl nrhw ksqt"
+            }
+        })
+        let mailDetails = {
+            from: "kanbanize@gmail.com",
+            to: email,
+            subject: "Reset Password",
+            html: `
+<html>
+<head>
+    <title>Password Reset Request</title>
+</head>
+<body>
+    <h1>Password Reset Request</h1>
+    <p>Dear ${user.username},</p>
+    <p>We have received a request to reset your password for your account with Kanbanize. To complete the password reset process, please click on the button below!</p>
+    <a href="http://localhost:4200/reset-password/${token}"><button style="background-color: #d291bc; color: white; padding: 14px 20px; border: none;
+     cursor: pointer; border-radius: 4px;">Reset Password</button></a>
+    <p>Please note that this link is only valid for 5 mins. If you did not request a password reset, please disregard this message.</p>
+    <p>Thank you,</p>
+    <p>The Kanbanize Team</p>
+</body>
+</html>
+            `,
+        };
+        mailTransporter.sendMail(mailDetails, async(err, data) => {
+            if (err) {
+                console.log(err);
+                res.send(false);
+            } else {
+                await newToken.save();
+                res.send(true)
+            }
+        })
+        
+    })
+})
+
+app.post('/reset-password', (req, res) => {
+    const token = req.body.token;
+    const newPassword = req.body.password;
+    jwt.verify(token, User.getJWTSecret(), async(err, data) => {
+        if (err) {
+            res.send(false)
+        } else {
+            const response = data;
+            const user = await User.findOne({email: { $regex: '^' + response.email + '$', $options: 'i'}})
+            user.password = newPassword
+            await user.save()
+            res.send(true)
+        }
+    })
+})
 
 /* HELPER METHODS */
 

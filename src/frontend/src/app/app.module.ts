@@ -16,6 +16,8 @@ import { EditTaskComponent } from './pages/edit-task/edit-task.component';
 import { DeleteTaskComponent } from './pages/delete-task/delete-task.component';
 import { DeleteBoardComponent } from './pages/delete-board/delete-board.component';
 import { WebReqInterceptor } from './web-req.interceptor';
+import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
+import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 
 @NgModule({
   declarations: [
@@ -27,7 +29,9 @@ import { WebReqInterceptor } from './web-req.interceptor';
     EditTaskComponent,
     DeleteTaskComponent,
     DeleteBoardComponent,
-    LoginComponent
+    LoginComponent,
+    ForgetPasswordComponent,
+    ResetPasswordComponent
 
   ],
   imports: [
