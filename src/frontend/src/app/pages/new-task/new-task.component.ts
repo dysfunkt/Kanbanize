@@ -3,6 +3,8 @@ import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router} from '@angular/router';
 import { Column } from '../../models/column.model';
 import { TaskCard } from '../../models/taskcard.model';
+import { AuthService } from '../../auth.service';
+import { User } from '../../models/user.model';
 
 @Component({
   selector: 'app-new-task',
@@ -11,10 +13,11 @@ import { TaskCard } from '../../models/taskcard.model';
 })
 export class NewTaskComponent implements OnInit{
 
-  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router) {}
+  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, private authService: AuthService) {}
 
   boardId!: string;
   column!: Column;
+  username!: string;
   ngOnInit() {
     this.route.params.subscribe(
       (params: Params) => {
@@ -27,6 +30,9 @@ export class NewTaskComponent implements OnInit{
         })
       }
     )
+    this.authService.getUsername().subscribe(next => {
+      this.username = (next as User).username
+    })
   }
 
   createTask() {
@@ -56,5 +62,9 @@ export class NewTaskComponent implements OnInit{
     const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
     titleDialog.close();
     dateDialog.close()
+  }
+  
+  logout() {
+    this.authService.logout()
   }
 }

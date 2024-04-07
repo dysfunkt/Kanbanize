@@ -161,6 +161,13 @@ export class KanbanViewComponent implements OnInit{
         this.router.navigate(['/delete-board', params['boardId']]);
     });
   }
+
+  addUser() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/add-user', params['boardId']]);
+    });
+  }
   
   formatDate(date: Date) {
     if (!date) {

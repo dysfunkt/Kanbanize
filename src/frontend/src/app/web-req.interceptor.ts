@@ -36,7 +36,7 @@ export class WebReqInterceptor implements HttpInterceptor{
               return EMPTY;
             })
           )
-        }
+        } 
         return throwError(() => {
           error
         });

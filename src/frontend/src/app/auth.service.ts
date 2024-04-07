@@ -32,6 +32,19 @@ export class AuthService {
     )
   }
 
+  forgetPassword(email: string) {
+    return this.http.post(`${this.webService.ROOT_URL}/send-email`, {
+      email
+    })
+  }
+
+  resetPassword(token: string, password: string) {
+    return this.http.post(`${this.webService.ROOT_URL}/reset-password`, {
+      token: token,
+      password: password
+    })
+  }
+
   logout() {
     this.removeSession();
 
