@@ -19,6 +19,7 @@ import { WebReqInterceptor } from './web-req.interceptor';
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AddUserComponent } from './pages/add-user/add-user.component';
+import { ViewUsersComponent } from './pages/view-users/view-users.component';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { AddUserComponent } from './pages/add-user/add-user.component';
     LoginComponent,
     ForgetPasswordComponent,
     ResetPasswordComponent,
-    AddUserComponent
+    AddUserComponent,
+    ViewUsersComponent
 
   ],
   imports: [

@@ -162,6 +162,18 @@ app.delete('/boards/:id', authenticate, (req,res) => {
     })
 });
 
+app.get('/boards/:id/users', authenticate, (req, res) => {
+    //return a board in the database
+    Board.findOne({
+        _id: req.params.id
+    }).then((board) => {
+        res.send(board.users);
+    }).catch((e) => {
+        res.send(e);
+    })
+})
+
+
 app.post ('/boards/:id/add-user', authenticate, (req, res) => {
     User.findOne({
         username: req.body.username

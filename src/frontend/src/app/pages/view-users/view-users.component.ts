@@ -1,27 +1,30 @@
 import { Component, HostListener, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { TaskCard } from '../../models/taskcard.model';
 import { AuthService } from '../../auth.service';
+import { Board } from '../../models/board.model';
 import { User } from '../../models/user.model';
 
 @Component({
-  selector: 'app-delete-task',
-  templateUrl: './delete-task.component.html',
-  styleUrl: './delete-task.component.scss'
+  selector: 'app-view-users',
+  templateUrl: './view-users.component.html',
+  styleUrl: './view-users.component.scss'
 })
-export class DeleteTaskComponent implements OnInit{
+export class ViewUsersComponent implements OnInit{
+  constructor(private taskService: TaskService, private router: Router, private authService: AuthService, private route: ActivatedRoute) {  }
+
   username!: string;
-  constructor(private taskService: TaskService, private route: ActivatedRoute, private router: Router, private authService: AuthService ) {}
-  boardId!: string;
-  taskcard!: TaskCard
-  ngOnInit() {
+
+  userIds!: any[];
+
+  users: User[] = [];
+
+  ngOnInit() { 
     this.route.params.subscribe(
       (params: Params) => {
-        this.boardId = params['boardId']
-        this.taskService.getTaskCard(params['columnId'], params['taskcardId']).subscribe(next => {
-          this.taskcard = next as TaskCard;
-          console.log(this.taskcard.title)
+        this.taskService.getUsers(params['boardId']).subscribe(next => {
+          this.userIds = next as string[];
+          this.usersInit()
         })
       }
     )
@@ -30,15 +33,23 @@ export class DeleteTaskComponent implements OnInit{
     })
   }
 
+  usersInit() {
+    for (var id of this.userIds) {
+      this.authService.getUsernameWithId(id['_userId']).subscribe(next => {
+        let user = next as User
+        this.users.push(user);
+        
+      })
+    }
+  }
+
   cancel() {
-    this.router.navigate(['/kanban-view', this.boardId]);
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/kanban-view', params['boardId']]);
+      }
+    )
   }
-
-  deleteTaskcard() {
-    this.taskService.deleteTaskCard(this.taskcard._columnId, this.taskcard._id).subscribe(() => {});
-    this.router.navigate(['/kanban-view', this.boardId]);
-  }
-
   logout() {
     this.authService.logout()
   }

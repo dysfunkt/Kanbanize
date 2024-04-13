@@ -92,4 +92,8 @@ export class TaskService {
       username
     })
   }
+
+  getUsers(boardId:string) {
+    return this.webReqService.get(`boards/${boardId}/users`);
+  }
 }

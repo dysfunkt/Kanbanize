@@ -176,6 +176,13 @@ export class KanbanViewComponent implements OnInit{
     });
   }
 
+  viewUsers() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['view-users', params['boardId']]);
+    });
+  }
+
   inputLengthCheck(input: string, length: number) {
     if (input.length > length) {
       return true;

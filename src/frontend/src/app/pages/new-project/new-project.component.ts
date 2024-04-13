@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { Router } from '@angular/router';
 import { Board } from '../../models/board.model';
@@ -40,5 +40,24 @@ export class NewProjectComponent implements OnInit{
 
   logout() {
     this.authService.logout()
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const navDropdown: HTMLDivElement = document.getElementById("navbarDropdown") as HTMLDivElement;
+    if (navDropdown) {
+      if(event.target == document.getElementById("navbarButton")) {
+        if (navDropdown.classList.contains('is-active')){
+          navDropdown.classList.remove('is-active')
+        } else {
+          navDropdown.classList.add('is-active')
+        }
+      } else {
+        if (navDropdown.classList.contains('is-active')) {
+          navDropdown.classList.remove('is-active')
+        }
+      }
+    }
+    
   }
 }
