@@ -217,7 +217,13 @@
       flex-direction: row;
       min-height: 25px;
       width: 100%;
-      
+      font-weight: bold;
+    }
+    .task-body {
+      display: flex;
+      flex-direction: row;
+      width: 100%;
+
     }
 
     .task-footer {

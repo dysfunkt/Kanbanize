@@ -43,17 +43,19 @@ export class TaskService {
     return this.webReqService.get(`columns/${columnId}/taskcards/${taskcardId}`);
   }
 
-  createTaskCard(columnId:string, title: string, position: Number, date: Date) {
+  createTaskCard(columnId:string, title: string, description: string, position: Number, date: Date) {
     return this.webReqService.post(`columns/${columnId}/taskcards`, { 
       title: title, 
+      description: description,
       position: position,
       dueDate: date
     });
   }
 
-  updateTaskCardDetails(columnId: string, taskcardId: string, title:string, date: Date) {
+  updateTaskCardDetails(columnId: string, taskcardId: string, title:string, description: string, date: Date) {
     return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
       title: title,
+      description: description,
       dueDate: date
     })
   }

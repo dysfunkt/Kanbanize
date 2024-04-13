@@ -41,31 +41,38 @@ export class EditTaskComponent implements OnInit {
   save() {
     const titleInput: HTMLInputElement = document.getElementById('taskTitleInput') as HTMLInputElement;
     const dateInput: HTMLInputElement = document.getElementById('taskDateInput') as HTMLInputElement;
+    const descInput: HTMLInputElement = document.getElementById('taskDescriptionInput') as HTMLInputElement;
     const date: Date = new Date(dateInput.value)
     if (titleInput.value == '') {
       const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
       titleDialog.show();
     } 
-    else if (this.inputLengthCheck(titleInput.value, 250)) {
-      const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
-      inputLengthDialog.show();
+    else if (this.inputLengthCheck(titleInput.value, 50)) {
+      const inputLength50Dialog : HTMLDialogElement = document.getElementById('inputLength50Error') as HTMLDialogElement;
+      inputLength50Dialog.show();
+    }
+    else if (this.inputLengthCheck(descInput.value, 250)) {
+      const inputLength250Dialog : HTMLDialogElement = document.getElementById('inputLength250Error') as HTMLDialogElement;
+      inputLength250Dialog.show();
     }
     else if (isNaN(date.getTime())) {
       const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
       dateDialog.show();
     }
     else {
-      this.taskService.updateTaskCardDetails(this.taskcard._columnId, this.taskcard._id, titleInput.value, date).subscribe(() => {});
+      this.taskService.updateTaskCardDetails(this.taskcard._columnId, this.taskcard._id, titleInput.value, descInput.value, date).subscribe(() => {});
     this.router.navigate(['/kanban-view', this.boardId]);
     }
   }
 
   close() {
     const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
-    const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
+    const inputLength250Dialog : HTMLDialogElement = document.getElementById('inputLength250Error') as HTMLDialogElement;
+    const inputLength50Dialog : HTMLDialogElement = document.getElementById('inputLength50Error') as HTMLDialogElement;
     const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
     titleDialog.close();
-    inputLengthDialog.close();
+    inputLength250Dialog.close();
+    inputLength50Dialog.close();
     dateDialog.close()
     
   }

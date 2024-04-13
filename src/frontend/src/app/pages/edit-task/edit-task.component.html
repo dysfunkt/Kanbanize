@@ -7,11 +7,20 @@
     <button class="button is-small dialog-button" (click)="close()">Ok</button>
   </div>
 </dialog>
-<dialog class="dialog-box" id="inputLengthError">
+<dialog class="dialog-box" id="inputLength250Error">
   <div class="dialog-content">
     <h1><b>Error</b></h1>
     <p>
       Limit your input to 250 characters!
+    </p>
+    <button class="button is-small dialog-button" (click)="close()">Ok</button>
+  </div>
+</dialog>
+<dialog class="dialog-box" id="inputLength50Error">
+  <div class="dialog-content">
+    <h1><b>Error</b></h1>
+    <p>
+      Limit your input to 50 characters!
     </p>
     <button class="button is-small dialog-button" (click)="close()">Ok</button>
   </div>
@@ -52,6 +61,14 @@
         id="taskTitleInput"
         value="{{ taskcard.title }}"
       />
+      </div>
+      <div class="field">
+        <label class="label">Task Description</label>
+        <textarea
+          id="taskDescriptionInput"
+          class="textarea has-background-light is-medium"
+          value="{{ taskcard.description }}"
+        ></textarea>
       </div>
       <div class="field">
         <label class="label">Task Due Date</label>
