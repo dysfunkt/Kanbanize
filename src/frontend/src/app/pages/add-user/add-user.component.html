@@ -25,7 +25,7 @@
       </div>
     </div>
     <div class="centered-content">
-      <div class="modal-box">
+      <div class="modal-box" id="main">
         <h1 class="title">Add User</h1>
         <div class="field">
           <input
@@ -47,6 +47,14 @@
           </button>
         </div>
       </div>
+      <div class="modal-box is-hidden" id="sub">
+        <h1 class="title">User Added!</h1>
+        <br>
+        <div class="buttons is-right">
+          <button class="button is-primary has-text-white is-medium" (click)="cancel()">Return to Board</button>
+          
+          
+        </div>
     </div>
     
   </div>

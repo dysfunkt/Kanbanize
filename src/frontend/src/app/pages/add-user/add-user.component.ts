@@ -39,7 +39,10 @@ export class AddUserComponent implements OnInit{
     } else {
       this.taskService.addUser(this.board._id, username).subscribe((res:any) => {
         if (res === true) {
-          console.log('success')
+          const mainModal: HTMLDivElement = document.getElementById('main') as HTMLDivElement;
+          const subModal: HTMLDivElement = document.getElementById('sub') as HTMLDivElement;
+          mainModal.classList.add('is-hidden');
+          subModal.classList.remove('is-hidden');
         } else {
           console.log('fail')
           console.log(res)
