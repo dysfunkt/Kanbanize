@@ -86,7 +86,11 @@
                 <div class="task-title">
                   {{ taskcard.title }}
                 </div>
-
+              </div>
+              <div class="task-footer">
+                <div class="due-date">
+                  Due: {{ formatDate(taskcard.dueDate) }}
+                </div>
                 <div class="field is-grouped">
                   <button
                     class="task-button priority"
@@ -126,11 +130,6 @@
                       src="../../../assets/trash-icon-grey.svg"
                     />
                   </button>
-                </div>
-              </div>
-              <div class="task-footer">
-                <div class="due-date">
-                  Due: {{ formatDate(taskcard.dueDate) }}
                 </div>
               </div>
             </div>

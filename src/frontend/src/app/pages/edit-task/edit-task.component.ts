@@ -46,6 +46,10 @@ export class EditTaskComponent implements OnInit {
       const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
       titleDialog.show();
     } 
+    else if (this.inputLengthCheck(titleInput.value, 250)) {
+      const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
+      inputLengthDialog.show();
+    }
     else if (isNaN(date.getTime())) {
       const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
       dateDialog.show();
@@ -58,14 +62,22 @@ export class EditTaskComponent implements OnInit {
 
   close() {
     const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+    const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
     const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
     titleDialog.close();
+    inputLengthDialog.close();
     dateDialog.close()
     
   }
 
   formatDate(date: Date) {
     return formatDate(date, 'yyyy-MM-dd', 'en-GB');
+  }
+
+  inputLengthCheck(input: string, length: number) {
+    if (input.length > length) {
+      return true;
+    } else return false;
   }
   
   logout() {
