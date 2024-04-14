@@ -129,8 +129,15 @@ export class KanbanViewComponent implements OnInit{
   }
 
   updateBoardTitle(title: string) {
-    this.board.title = title;
-    this.taskService.updateBoardTitle(this.board._id, title).subscribe(() => {});
+    if (this.inputLengthCheck(title, 50)) {
+      const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
+      inputLengthDialog.show();
+    }
+    else {
+      this.board.title = title;
+      this.taskService.updateBoardTitle(this.board._id, title).subscribe(() => {});
+    }
+    
   }
 
   updateAllTaskCards() {
@@ -168,6 +175,19 @@ export class KanbanViewComponent implements OnInit{
         this.router.navigate(['/add-user', params['boardId']]);
     });
   }
+
+  viewUsers() {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['view-users', params['boardId']]);
+    });
+  }
+
+  inputLengthCheck(input: string, length: number) {
+    if (input.length > length) {
+      return true;
+    } else return false;
+  }
   
   formatDate(date: Date) {
     if (!date) {
@@ -176,6 +196,12 @@ export class KanbanViewComponent implements OnInit{
       return formatDate(date, 'dd/MM/yyyy', 'en-GB');
     }
     
+  }
+
+  close() {
+    const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;
+
+    inputLengthDialog.close();
   }
 
   @HostListener('document:click', ['$event'])

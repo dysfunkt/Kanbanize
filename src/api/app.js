@@ -162,6 +162,18 @@ app.delete('/boards/:id', authenticate, (req,res) => {
     })
 });
 
+app.get('/boards/:id/users', authenticate, (req, res) => {
+    //return a board in the database
+    Board.findOne({
+        _id: req.params.id
+    }).then((board) => {
+        res.send(board.users);
+    }).catch((e) => {
+        res.send(e);
+    })
+})
+
+
 app.post ('/boards/:id/add-user', authenticate, (req, res) => {
     User.findOne({
         username: req.body.username
@@ -319,6 +331,7 @@ app.post('/columns/:columnId/taskcards', authenticate, (req, res) => {
     //We want to create a new taskcard in a column specified by columnId
     let newTaskCard = new TaskCard({
         title: req.body.title,
+        description: req.body.description,
         _columnId: req.params.columnId,
         position: req.body.position,
         dueDate: req.body.dueDate

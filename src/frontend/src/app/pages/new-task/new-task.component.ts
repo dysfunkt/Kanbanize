@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router} from '@angular/router';
 import { Column } from '../../models/column.model';
@@ -38,17 +38,26 @@ export class NewTaskComponent implements OnInit{
   createTask() {
     const titleInput: HTMLInputElement = document.getElementById('taskTitleInput') as HTMLInputElement;
     const dateInput: HTMLInputElement = document.getElementById('taskDateInput') as HTMLInputElement;
+    const descInput: HTMLInputElement = document.getElementById('taskDescriptionInput') as HTMLInputElement;
     const date: Date = new Date(dateInput.value)
     if (titleInput.value == '') {
       const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
       titleDialog.show();
     } 
+    else if (this.inputLengthCheck(titleInput.value, 50)) {
+      const inputLength50Dialog : HTMLDialogElement = document.getElementById('inputLength50Error') as HTMLDialogElement;
+      inputLength50Dialog.show();
+    }
+    else if (this.inputLengthCheck(descInput.value, 250)) {
+      const inputLength250Dialog : HTMLDialogElement = document.getElementById('inputLength250Error') as HTMLDialogElement;
+      inputLength250Dialog.show();
+    }
     else if (isNaN(date.getTime())) {
       const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
       dateDialog.show();
     }
     else {
-      this.taskService.createTaskCard(this.column._id, titleInput.value, new Number(this.column.taskcards.length), date).subscribe(() => {});
+      this.taskService.createTaskCard(this.column._id, titleInput.value, descInput.value, new Number(this.column.taskcards.length), date).subscribe(() => {});
     this.router.navigate(['/kanban-view', this.boardId]);
     }
   }
@@ -59,12 +68,41 @@ export class NewTaskComponent implements OnInit{
 
   close() {
     const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+    const inputLength250Dialog : HTMLDialogElement = document.getElementById('inputLength250Error') as HTMLDialogElement;
+    const inputLength50Dialog : HTMLDialogElement = document.getElementById('inputLength50Error') as HTMLDialogElement;
     const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
     titleDialog.close();
+    inputLength250Dialog.close();
+    inputLength50Dialog.close();
     dateDialog.close()
   }
   
+  inputLengthCheck(input: string, length: number) {
+    if (input.length > length) {
+      return true;
+    } else return false;
+  }
+
   logout() {
     this.authService.logout()
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const navDropdown: HTMLDivElement = document.getElementById("navbarDropdown") as HTMLDivElement;
+    if (navDropdown) {
+      if(event.target == document.getElementById("navbarButton")) {
+        if (navDropdown.classList.contains('is-active')){
+          navDropdown.classList.remove('is-active')
+        } else {
+          navDropdown.classList.add('is-active')
+        }
+      } else {
+        if (navDropdown.classList.contains('is-active')) {
+          navDropdown.classList.remove('is-active')
+        }
+      }
+    }
+    
   }
 }

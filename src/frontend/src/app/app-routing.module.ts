@@ -11,6 +11,7 @@ import { LoginComponent } from './pages/login/login.component';
 import { ForgetPasswordComponent } from './pages/forget-password/forget-password.component';
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AddUserComponent } from './pages/add-user/add-user.component';
+import { ViewUsersComponent } from './pages/view-users/view-users.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
   { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
   { path: 'delete-board/:boardId', component: DeleteBoardComponent },
   { path: 'add-user/:boardId', component: AddUserComponent },
+  { path: 'view-users/:boardId', component: ViewUsersComponent },
   { path: 'new-project', component: NewProjectComponent },
   { path: 'login', component: LoginComponent },
   { path: 'forget-password', component: ForgetPasswordComponent },

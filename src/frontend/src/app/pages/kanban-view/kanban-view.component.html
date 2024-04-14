@@ -1,3 +1,12 @@
+<dialog class="dialog-box" id="inputLengthError">
+  <div class="dialog-content">
+    <h1><b>Error</b></h1>
+    <p>
+      Limit your input to 50 characters!
+    </p>
+    <button class="button is-small dialog-button" (click)="close()">Ok</button>
+  </div>
+</dialog>
 <div class="root">
   <div class="navbar has-background-dark">
     <div class="navbar-brand">
@@ -51,6 +60,7 @@
 				<div class="dropdown-menu" id="dropdown-menu" role="menu">
 					<div class="dropdown-content">
             <a class="dropdown-item " (click)="addUser()"> Add User </a>
+            <a class="dropdown-item " (click)="viewUsers()"> View Users </a>
 						<a class="dropdown-item has-text-danger" (click)="deleteBoardConfirm()"> Delete Board </a>
 					</div>
 				</div>
@@ -86,7 +96,12 @@
                 <div class="task-title">
                   {{ taskcard.title }}
                 </div>
-
+              </div>
+              <div class="task-body">{{ taskcard.description }}</div>
+              <div class="task-footer">
+                <div class="due-date">
+                  Due: {{ formatDate(taskcard.dueDate) }}
+                </div>
                 <div class="field is-grouped">
                   <button
                     class="task-button priority"
@@ -126,11 +141,6 @@
                       src="../../../assets/trash-icon-grey.svg"
                     />
                   </button>
-                </div>
-              </div>
-              <div class="task-footer">
-                <div class="due-date">
-                  Due: {{ formatDate(taskcard.dueDate) }}
                 </div>
               </div>
             </div>

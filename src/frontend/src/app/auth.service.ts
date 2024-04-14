@@ -112,4 +112,8 @@ export class AuthService {
   getUsername() {
     return this.webService.getUsername(this.getUserId());
   }
+
+  getUsernameWithId(id: string) {
+    return this.webService.getUsername(id);
+  }
 }

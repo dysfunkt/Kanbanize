@@ -7,6 +7,10 @@ const TaskCardSchema = new mongoose.Schema({
         minlength: 1,
         trim: true
     },
+    description: {
+        type: String,
+        trim: true
+    },
     _columnId: {
         type: mongoose.Types.ObjectId,
         required: true

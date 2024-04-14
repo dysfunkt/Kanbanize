@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { TaskService } from '../../task.service';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { AuthService } from '../../auth.service';
@@ -39,7 +39,10 @@ export class AddUserComponent implements OnInit{
     } else {
       this.taskService.addUser(this.board._id, username).subscribe((res:any) => {
         if (res === true) {
-          console.log('success')
+          const mainModal: HTMLDivElement = document.getElementById('main') as HTMLDivElement;
+          const subModal: HTMLDivElement = document.getElementById('sub') as HTMLDivElement;
+          mainModal.classList.add('is-hidden');
+          subModal.classList.remove('is-hidden');
         } else {
           console.log('fail')
           console.log(res)
@@ -65,5 +68,24 @@ export class AddUserComponent implements OnInit{
 
   logout() {
     this.authService.logout()
+  }
+
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    const navDropdown: HTMLDivElement = document.getElementById("navbarDropdown") as HTMLDivElement;
+    if (navDropdown) {
+      if(event.target == document.getElementById("navbarButton")) {
+        if (navDropdown.classList.contains('is-active')){
+          navDropdown.classList.remove('is-active')
+        } else {
+          navDropdown.classList.add('is-active')
+        }
+      } else {
+        if (navDropdown.classList.contains('is-active')) {
+          navDropdown.classList.remove('is-active')
+        }
+      }
+    }
+    
   }
 }
