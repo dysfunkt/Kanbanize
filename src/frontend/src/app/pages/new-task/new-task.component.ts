@@ -56,10 +56,23 @@ export class NewTaskComponent implements OnInit{
       const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
       dateDialog.show();
     }
+    else if (this.dateBoundaryCheck(date)) {
+      const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
+      dateDialog.show();
+    }
     else {
       this.taskService.createTaskCard(this.column._id, titleInput.value, descInput.value, new Number(this.column.taskcards.length), date).subscribe(() => {});
     this.router.navigate(['/kanban-view', this.boardId]);
     }
+  }
+
+  dateBoundaryCheck(date: Date) {
+    let dateObj = new Date(date.toDateString());
+    let today = new Date(new Date().toDateString())
+    let before = dateObj < today;
+    today.setFullYear(today.getFullYear() + 2);
+    let after = dateObj > today;
+    return before || after
   }
 
   cancel() {

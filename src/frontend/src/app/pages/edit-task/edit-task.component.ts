@@ -43,6 +43,7 @@ export class EditTaskComponent implements OnInit {
     const dateInput: HTMLInputElement = document.getElementById('taskDateInput') as HTMLInputElement;
     const descInput: HTMLInputElement = document.getElementById('taskDescriptionInput') as HTMLInputElement;
     const date: Date = new Date(dateInput.value)
+    console.log(this.dateBoundaryCheck(date));
     if (titleInput.value == '') {
       const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
       titleDialog.show();
@@ -56,6 +57,10 @@ export class EditTaskComponent implements OnInit {
       inputLength250Dialog.show();
     }
     else if (isNaN(date.getTime())) {
+      const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
+      dateDialog.show();
+    }
+    else if (this.dateBoundaryCheck(date)) {
       const dateDialog : HTMLDialogElement = document.getElementById('dateError') as HTMLDialogElement;
       dateDialog.show();
     }
@@ -85,6 +90,15 @@ export class EditTaskComponent implements OnInit {
     if (input.length > length) {
       return true;
     } else return false;
+  }
+
+  dateBoundaryCheck(date: Date) {
+    let dateObj = new Date(date.toDateString());
+    let today = new Date(new Date().toDateString())
+    let before = dateObj < today;
+    today.setFullYear(today.getFullYear() + 2);
+    let after = dateObj > today;
+    return before || after
   }
   
   logout() {
