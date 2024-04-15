@@ -72,6 +72,13 @@ export class KanbanViewComponent implements OnInit{
     });
   }
 
+  commentTaskClick(taskcard: TaskCard) {
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/comments', params['boardId'], taskcard._columnId, taskcard._id]);
+    });
+  }
+
   editTitleClick() {
     const boardTitle: HTMLDivElement = document.getElementById('title-container') as HTMLDivElement;
     const titleInput: HTMLInputElement = document.getElementById('title-input') as HTMLInputElement;
@@ -161,6 +168,10 @@ export class KanbanViewComponent implements OnInit{
         this.router.navigate(['/delete-task', params['boardId'], taskcard._columnId, taskcard._id]);
     });
   }
+
+  assignTask(taskcard: TaskCard) {
+    
+  }
   
   deleteBoardConfirm() {
     this.route.params.subscribe(
@@ -188,15 +199,8 @@ export class KanbanViewComponent implements OnInit{
       return true;
     } else return false;
   }
+
   
-  formatDate(date: Date) {
-    if (!date) {
-      return 'undefined'
-    } else {
-      return formatDate(date, 'dd/MM/yyyy', 'en-GB');
-    }
-    
-  }
 
   close() {
     const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;

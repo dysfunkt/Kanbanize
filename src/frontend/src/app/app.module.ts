@@ -20,6 +20,7 @@ import { ForgetPasswordComponent } from './pages/forget-password/forget-password
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AddUserComponent } from './pages/add-user/add-user.component';
 import { ViewUsersComponent } from './pages/view-users/view-users.component';
+import { CommentsComponent } from './pages/comments/comments.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +36,8 @@ import { ViewUsersComponent } from './pages/view-users/view-users.component';
     ForgetPasswordComponent,
     ResetPasswordComponent,
     AddUserComponent,
-    ViewUsersComponent
+    ViewUsersComponent,
+    CommentsComponent
 
   ],
   imports: [

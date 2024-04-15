@@ -12,6 +12,7 @@ import { ForgetPasswordComponent } from './pages/forget-password/forget-password
 import { ResetPasswordComponent } from './pages/reset-password/reset-password.component';
 import { AddUserComponent } from './pages/add-user/add-user.component';
 import { ViewUsersComponent } from './pages/view-users/view-users.component';
+import { CommentsComponent } from './pages/comments/comments.component';
 
 
 const routes: Routes = [
@@ -21,6 +22,7 @@ const routes: Routes = [
   { path: 'new-task/:boardId/:columnId', component: NewTaskComponent },
   { path: 'edit-task/:boardId/:columnId/:taskcardId', component: EditTaskComponent },
   { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
+  { path: 'comments/:boardId/:columnId/:taskcardId', component: CommentsComponent },
   { path: 'delete-board/:boardId', component: DeleteBoardComponent },
   { path: 'add-user/:boardId', component: AddUserComponent },
   { path: 'view-users/:boardId', component: ViewUsersComponent },
