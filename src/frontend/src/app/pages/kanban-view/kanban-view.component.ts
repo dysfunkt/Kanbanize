@@ -168,6 +168,10 @@ export class KanbanViewComponent implements OnInit{
         this.router.navigate(['/delete-task', params['boardId'], taskcard._columnId, taskcard._id]);
     });
   }
+
+  assignTask(taskcard: TaskCard) {
+    
+  }
   
   deleteBoardConfirm() {
     this.route.params.subscribe(
@@ -196,6 +200,7 @@ export class KanbanViewComponent implements OnInit{
     } else return false;
   }
 
+  
 
   close() {
     const inputLengthDialog : HTMLDialogElement = document.getElementById('inputLengthError') as HTMLDialogElement;

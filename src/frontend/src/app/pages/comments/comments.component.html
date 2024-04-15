@@ -30,6 +30,10 @@
           <p *ngIf="taskcard">{{ taskcard.description }}</p>
         </div>
         <div class="task-info">
+          <h3 class="info-title">Assigned to</h3>
+          <p *ngIf="taskcard">{{ taskcard.assignedTo }}</p>
+        </div>
+        <div class="task-info">
           <h3 class="info-title">Due Date</h3>
           <p *ngIf="taskcard">{{ taskcard.dueDate | date:'dd/MM/yyyy' }}</p>
         </div>
