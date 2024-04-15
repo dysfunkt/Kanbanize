@@ -22,13 +22,20 @@ export class NewProjectComponent implements OnInit{
   }
 
   createProject(title: string) {
-    this.taskService.createBoard(title).subscribe(next => {
+    if (title === '') {
+      const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+      titleDialog.show();
+    }
+    else {
+      this.taskService.createBoard(title).subscribe(next => {
       const board: Board = next as Board;
       console.log(board);
       this.initColumns(board._id)
       //change this to /kanban-view/board._id
       this.router.navigate(['/project-list'])
-    });
+      });
+    }
+    
   }
   
   initColumns(boardId: string) {
@@ -40,6 +47,13 @@ export class NewProjectComponent implements OnInit{
 
   logout() {
     this.authService.logout()
+  }
+
+  close() {
+    const titleDialog : HTMLDialogElement = document.getElementById('titleError') as HTMLDialogElement;
+  
+    titleDialog.close();
+    
   }
 
   @HostListener('document:click', ['$event'])
