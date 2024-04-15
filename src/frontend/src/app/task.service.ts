@@ -77,6 +77,12 @@ export class TaskService {
       priority: priority
     })
   }
+
+  updateTaskCardAssigned(columnId: string, taskcardId: string, username: string) {
+    return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
+      assignedTo: username
+    })
+  }
   
   updateBoardTitle(boardId: string, title: string) {
     return this.webReqService.patch(`boards/${boardId}`, { title: title })

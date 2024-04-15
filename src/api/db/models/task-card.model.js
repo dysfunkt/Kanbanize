@@ -26,6 +26,10 @@ const TaskCardSchema = new mongoose.Schema({
     priority: {
         type: Boolean,
         default: false
+    }, 
+    assignedTo: {
+        type: String,
+        default: 'Unassigned'
     }
 
 })

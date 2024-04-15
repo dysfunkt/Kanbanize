@@ -13,6 +13,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { AddUserComponent } from './pages/add-user/add-user.component';
 import { ViewUsersComponent } from './pages/view-users/view-users.component';
 import { CommentsComponent } from './pages/comments/comments.component';
+import { AssignComponent } from './pages/assign/assign.component';
 
 
 const routes: Routes = [
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'edit-task/:boardId/:columnId/:taskcardId', component: EditTaskComponent },
   { path: 'delete-task/:boardId/:columnId/:taskcardId', component: DeleteTaskComponent },
   { path: 'comments/:boardId/:columnId/:taskcardId', component: CommentsComponent },
+  { path: 'assign/:boardId/:columnId/:taskcardId', component: AssignComponent },
   { path: 'delete-board/:boardId', component: DeleteBoardComponent },
   { path: 'add-user/:boardId', component: AddUserComponent },
   { path: 'view-users/:boardId', component: ViewUsersComponent },

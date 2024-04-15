@@ -170,7 +170,10 @@ export class KanbanViewComponent implements OnInit{
   }
 
   assignTask(taskcard: TaskCard) {
-    
+    this.route.params.subscribe(
+      (params: Params) => {
+        this.router.navigate(['/assign', params['boardId'], taskcard._columnId, taskcard._id]);
+    });
   }
   
   deleteBoardConfirm() {
