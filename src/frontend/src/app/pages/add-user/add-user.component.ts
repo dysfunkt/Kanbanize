@@ -15,6 +15,8 @@ export class AddUserComponent implements OnInit{
   constructor(private taskService: TaskService, private router: Router, private authService: AuthService, private route: ActivatedRoute) {  }
 
   username!: string;
+  userIds!: any[];
+  users: string[] = [];
 
   board!: Board;
   ngOnInit() { 
@@ -22,6 +24,10 @@ export class AddUserComponent implements OnInit{
       (params: Params) => {
         this.taskService.getBoard(params['boardId']).subscribe(next => {
           this.board = next as Board
+          this.taskService.getUsers(params['boardId']).subscribe(next => {
+            this.userIds = next as string[];
+            this.usersInit()
+          })
         })
       }
     )
@@ -30,25 +36,41 @@ export class AddUserComponent implements OnInit{
     })
   }
 
-  async addButtonClick(username: string) {
-    let usernamecheck = await this.checkUser(username);
-    if(!usernamecheck) {
-      //username does not exist
-      const usernameDialog : HTMLDialogElement = document.getElementById('usernameError') as HTMLDialogElement;
-      usernameDialog.show();
-    } else {
-      this.taskService.addUser(this.board._id, username).subscribe((res:any) => {
-        if (res === true) {
-          const mainModal: HTMLDivElement = document.getElementById('main') as HTMLDivElement;
-          const subModal: HTMLDivElement = document.getElementById('sub') as HTMLDivElement;
-          mainModal.classList.add('is-hidden');
-          subModal.classList.remove('is-hidden');
-        } else {
-          console.log('fail')
-          console.log(res)
-        }
+  usersInit() {
+    for (var id of this.userIds) {
+      this.authService.getUsernameWithId(id['_userId']).subscribe(next => {
+        let user = next as User
+        this.users.push(user.username);
+        
       })
     }
+  }
+
+  async addButtonClick(username: string) {
+    if (this.users.includes(username)) {
+      const userExistsDialog : HTMLDialogElement = document.getElementById('userExistsError') as HTMLDialogElement;
+      userExistsDialog.show();
+    } else {
+      let usernamecheck = await this.checkUser(username);
+      if(!usernamecheck) {
+        //username does not exist
+        const usernameDialog : HTMLDialogElement = document.getElementById('usernameError') as HTMLDialogElement;
+        usernameDialog.show();
+      } else {
+        this.taskService.addUser(this.board._id, username).subscribe((res:any) => {
+          if (res === true) {
+            const mainModal: HTMLDivElement = document.getElementById('main') as HTMLDivElement;
+            const subModal: HTMLDivElement = document.getElementById('sub') as HTMLDivElement;
+            mainModal.classList.add('is-hidden');
+            subModal.classList.remove('is-hidden');
+          } else {
+            console.log('fail')
+            console.log(res)
+          }
+        })
+      }
+    }
+    
   }
 
   async checkUser(username: string) {
@@ -59,6 +81,8 @@ export class AddUserComponent implements OnInit{
 
   close() {
     const usernameDialog : HTMLDialogElement = document.getElementById('usernameError') as HTMLDialogElement;
+    const userExistsDialog : HTMLDialogElement = document.getElementById('userExistsError') as HTMLDialogElement;
+      userExistsDialog.close();
       usernameDialog.close();
   }
 
