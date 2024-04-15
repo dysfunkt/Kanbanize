@@ -8,7 +8,7 @@ const { mongoose } = require('./db/mongoose');
 const bodyParser = require('body-parser');
 
 // Load in mongoose models
-const { Board, Column, TaskCard, User, ResetToken } = require('./db/models');
+const { Board, Column, TaskCard, User, ResetToken, Comment } = require('./db/models');
 
 /* MIDDLEWARE */
 
@@ -353,6 +353,29 @@ app.delete('/columns/:columnId/taskcards/:taskcardId', authenticate, (req, res) 
         res.send(removedTaskCardDoc);
     })
 });
+
+app.get('/taskcards/:taskcardId/comments', authenticate, (req, res) => {
+    //We want to get comments in a taskcard specified by taskcardId
+    Comment.find({
+        _taskcardId: req.params.taskcardId
+    }).then((comments) => {
+        res.send(comments);
+    })
+})
+
+app.post('/taskcards/:taskcardId/comments', authenticate, (req, res) => {
+    //We want to create a new comment in a taskcard specified by taskcardId
+    let newComment = new Comment({
+        _taskcardId: req.params.taskcardId,
+        _userId: req.user_id,
+        username: req.body.username, 
+        message: req.body.message,
+        date: req.body.date
+    });
+    newComment.save().then((newCommentDoc) => {
+        res.send(newCommentDoc);
+    })
+})
 
 
 /* USER ROUTES */

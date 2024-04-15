@@ -52,6 +52,18 @@ export class TaskService {
     });
   }
 
+  getComments(taskcardId: string) {
+    return this.webReqService.get(`taskcards/${taskcardId}/comments`);
+  }
+
+  createComment(taskcardId: string, username: string, message: string, date: Date) {
+    return this.webReqService.post(`taskcards/${taskcardId}/comments`, {
+      username: username,
+      message: message,
+      date: date
+    })
+  }
+
   updateTaskCardDetails(columnId: string, taskcardId: string, title:string, description: string, date: Date) {
     return this.webReqService.patch(`columns/${columnId}/taskcards/${taskcardId}`, {
       title: title,

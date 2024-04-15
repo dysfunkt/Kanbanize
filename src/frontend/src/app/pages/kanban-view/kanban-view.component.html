@@ -100,7 +100,7 @@
               <div class="task-body">{{ taskcard.description }}</div>
               <div class="task-footer">
                 <div class="due-date">
-                  Due: {{ formatDate(taskcard.dueDate) }}
+                  Due: {{ taskcard.dueDate | date:'dd/MM/yyyy' }}
                 </div>
                 <div class="field is-grouped">
                   <button
@@ -130,6 +130,15 @@
                     <img
                       class="task-icons"
                       src="../../../assets/edit-icon.svg"
+                    />
+                  </button>
+                  <button
+                    class="task-button button-hover"
+                    (click)="commentTaskClick(taskcard)"
+                  >
+                    <img
+                      class="task-icons"
+                      src="../../../assets/comment-icon.svg"
                     />
                   </button>
                   <button
