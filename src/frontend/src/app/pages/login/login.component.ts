@@ -15,20 +15,26 @@ export class LoginComponent {
   
 
   onLoginButtonClick(username: string, password: string) {
-    this.authService.login(username, password).subscribe({
-      next: (res: HttpResponse<any>) => {
-        
-        if (res.status === 200) {
-          this.router.navigate(['/project-list']);
+    if (username === '' || password === '') {
+      const emptyFieldDialog : HTMLDialogElement = document.getElementById('emptyFieldError') as HTMLDialogElement;
+      emptyFieldDialog.show();
+    } else {
+      this.authService.login(username, password).subscribe({
+        next: (res: HttpResponse<any>) => {
+          
+          if (res.status === 200) {
+            this.router.navigate(['/project-list']);
+          }
+  
+          console.log(res);
+        },
+        error: () => {
+            const invalidLoginDialog : HTMLDialogElement = document.getElementById('invalidLoginError') as HTMLDialogElement;
+            invalidLoginDialog.show();
         }
-
-        console.log(res);
-      },
-      error: () => {
-          const invalidLoginDialog : HTMLDialogElement = document.getElementById('invalidLoginError') as HTMLDialogElement;
-          invalidLoginDialog.show();
-      }
-    })
+      })
+    }
+    
   }
 
   async onRegisterButtonClick(username: string, email: string, password1: string, password2: string) {
