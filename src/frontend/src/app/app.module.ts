@@ -21,6 +21,7 @@ import { ResetPasswordComponent } from './pages/reset-password/reset-password.co
 import { AddUserComponent } from './pages/add-user/add-user.component';
 import { ViewUsersComponent } from './pages/view-users/view-users.component';
 import { CommentsComponent } from './pages/comments/comments.component';
+import { AssignComponent } from './pages/assign/assign.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { CommentsComponent } from './pages/comments/comments.component';
     ResetPasswordComponent,
     AddUserComponent,
     ViewUsersComponent,
-    CommentsComponent
+    CommentsComponent,
+    AssignComponent
 
   ],
   imports: [
