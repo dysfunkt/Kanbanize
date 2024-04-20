@@ -20,7 +20,14 @@ const UserSchema = new mongoose.Schema({
         required: true,
         minlength: 1,
         trim: true,
-        unique: true
+        unique: true,
+        validate: {
+            validator: function(v) {
+                // Regular expression to match email addresses
+                const emailRegex = /^[a-zA-Z0-9._-]+@(hotmail|gmail|outlook)\.(com)$/;
+                return emailRegex.test(v);
+            },
+        }
     },
     password: {
         type: String,
