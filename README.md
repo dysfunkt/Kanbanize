@@ -2,32 +2,21 @@
 This is a project that uses the Angular framework.
 ## Dependencies required
 - [Angular CLI 17.2.3 & Node 20.11.1](https://radixweb.com/blog/how-to-install-angular-on-windows)
-- MongoDB 7.0.6
+- [MongoDB 7.0.X](https://www.mongodb.com/try/download/community)
+- [Nodemon](https://www.npmjs.com/package/nodemon)
 
 ## How to run
-Navigate to ./src/api and run `nodemon app.js` to start mongodb server.
-Navigate to ./src/frontend and run `ng serve` then go to the localhost link. Any changes made there will auto update. 
+Ensure that dependencies above are installed.  
+Navigate to ./src/api and run `nodemon app.js` to start backend server.  
+Navigate to ./src/frontend and run `ng serve` then go to the localhost link to view the website.
 
-## Git
-Main branch will be locked from being pushed. All changes are to be made in your own branch and merged via pull requests.
-To create a new branch:
-```
-git checkout -b <branch-name>
-```
+## Deliverables
+- [Lab Deliverables](./deliverables/)
+- [Source Code (Frontend)](./src/frontend/)
+- [Source Code (Backend)](./src/api/)
+- [Documentation](./src/frontend/documentation/index.html)
+- [Demo (YouTube)](https://www.youtube.com/watch?v=G8lqwwTZkqo)
 
-To save your work to your branch locally:
-```
-git add <file-name OR folder-name>
-OR
-git add . (to commit whole directory)
-THEN
-git commit -m "COMMENT TO DESCRIBE THE INTENTION OF THE COMMIT"
-```
 
-After committing locally, to push to remote repository:
-```
-git push origin <branch-name>
-```
 
-## Merging and pull requests
-To merge the main branch, first push your branch. Then create a pull request by clicking "Compare & pull request" and contact Willy and Samuel after.
+
