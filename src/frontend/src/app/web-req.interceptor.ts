@@ -6,6 +6,13 @@ import { AuthService } from './auth.service';
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * 
+ * This interceptor checks the validity of the access token and is also responsible for initiating the refresh process.
+ * This web request interceptor implements HttpInterceptor.
+ * 
+ */
 export class WebReqInterceptor implements HttpInterceptor{
 
   constructor(private authService: AuthService) { }
@@ -14,6 +21,12 @@ export class WebReqInterceptor implements HttpInterceptor{
 
   accessTokenRefreshed: Subject<void> = new Subject();
 
+  /**
+   * Intercepts outgoing HTTP requests and attaches UserId and access token to the header.
+   * @param request Outgoing HTTP request
+   * @param next HttpHandler
+   * @returns request
+   */
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<any> {
     request = this.addAuthHeader(request);
       
@@ -44,6 +57,10 @@ export class WebReqInterceptor implements HttpInterceptor{
     )
   }
 
+  /**
+   * Checks if an ongoing access token refresh is taking place and starts one if not.
+   * @returns Access Token
+   */
   refreshAccessToken() {
     if (this.refreshingAccessToken) {
       return new Observable(observer => {
@@ -66,6 +83,11 @@ export class WebReqInterceptor implements HttpInterceptor{
     
   }
   
+  /**
+   * Adds headers to the request.
+   * @param request Outgoing request
+   * @returns request
+   */
   addAuthHeader(request: HttpRequest<any>) {
     const token = this.authService.getAccessToken();
 

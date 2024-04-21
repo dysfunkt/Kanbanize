@@ -4,6 +4,10 @@ import { Injectable } from '@angular/core';
 @Injectable({
   providedIn: 'root'
 })
+
+/**
+ * Contains all the RESTful API methods to backend server.
+ */
 export class WebRequestService {
 
   readonly ROOT_URL;
@@ -12,22 +16,48 @@ export class WebRequestService {
     this.ROOT_URL= 'http://localhost:3000';
   }
 
+  /**
+   * GET
+   * @param uri API route
+   * @returns API response
+   */
   get(uri: string) {
     return this.http.get(`${this.ROOT_URL}/${uri}`);
   }
 
+  /**
+   * POST
+   * @param uri API route
+   * @returns API response
+   */
   post(uri: string, payload: Object) {
     return this.http.post(`${this.ROOT_URL}/${uri}`, payload);
   }
 
+  /**
+   * PATCH
+   * @param uri API route
+   * @returns API response
+   */
   patch(uri: string, payload: Object) {
     return this.http.patch(`${this.ROOT_URL}/${uri}`, payload);
   }
 
+  /**
+   * DELETE
+   * @param uri API route
+   * @returns API response
+   */
   delete(uri: string) {
     return this.http.delete(`${this.ROOT_URL}/${uri}`);
   }
 
+  /**
+   * Login
+   * @param username username
+   * @param password password
+   * @returns API response
+   */
   login(username: string, password: string) {
     return this.http.post(`${this.ROOT_URL}/users/login`, {
       username,
@@ -37,6 +67,13 @@ export class WebRequestService {
     });
   }
 
+  /**
+   * Signup
+   * @param username username
+   * @param email email
+   * @param password password
+   * @returns API response
+   */
   signup(username: string, email: string, password: string) {
     return this.http.post(`${this.ROOT_URL}/users`, {
       username,
